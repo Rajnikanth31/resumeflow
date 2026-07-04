@@ -1,7 +1,23 @@
 import "globals.css";
+import { Inter, Outfit, JetBrains_Mono } from "next/font/google";
 import { TopNavBar } from "components/TopNavBar";
 import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "components/ThemeProvider";
+
+const fontSans = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const fontHeading = Outfit({
+  subsets: ["latin"],
+  variable: "--font-heading",
+});
+
+const fontMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 
 export const metadata = {
   title: "ResumeFlow - Build. Optimize. Get Hired.",
@@ -16,7 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${fontSans.variable} ${fontHeading.variable} ${fontMono.variable}`}>
         <ThemeProvider>
           <TopNavBar />
           {children}
