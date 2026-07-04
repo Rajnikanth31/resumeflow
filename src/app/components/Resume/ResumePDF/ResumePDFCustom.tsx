@@ -31,6 +31,7 @@ export const ResumePDFCustom = ({
         <ResumePDFBulletList
           items={descriptions}
           showBulletPoints={showBulletPoints}
+          template={template}
         />
       </View>
     </ResumePDFSection>

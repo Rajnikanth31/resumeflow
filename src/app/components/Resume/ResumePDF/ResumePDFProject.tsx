@@ -36,7 +36,7 @@ export const ResumePDFProject = ({
             <ResumePDFText>{date}</ResumePDFText>
           </View>
           <View style={{ ...styles.flexCol, marginTop: spacing["0.5"] }}>
-            <ResumePDFBulletList items={descriptions} />
+            <ResumePDFBulletList items={descriptions} template={template} />
           </View>
         </View>
       ))}

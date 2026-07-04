@@ -73,6 +73,32 @@ export const ResumePDFSection = ({
             {heading}
           </Text>
         </View>
+      ) : template === "tech" ? (
+        <View style={{ ...styles.flexRow, alignItems: "center" }}>
+          {themeColor && (
+            <View
+              style={{
+                height: "14pt",
+                width: "4pt",
+                backgroundColor: themeColor,
+                marginRight: spacing["2"],
+              }}
+              debug={DEBUG_RESUME_PDF_FLAG}
+            />
+          )}
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontFamily: "Courier",
+              letterSpacing: "0.3pt",
+              fontSize: "12pt",
+              color: themeColor,
+            }}
+            debug={DEBUG_RESUME_PDF_FLAG}
+          >
+            {heading}
+          </Text>
+        </View>
       ) : (
         <View style={{ ...styles.flexRow, alignItems: "center" }}>
           {themeColor && (
@@ -129,9 +155,11 @@ export const ResumePDFText = ({
 export const ResumePDFBulletList = ({
   items,
   showBulletPoints = true,
+  template = "classic",
 }: {
   items: string[];
   showBulletPoints?: boolean;
+  template?: string;
 }) => {
   return (
     <>
@@ -143,10 +171,11 @@ export const ResumePDFBulletList = ({
                 paddingLeft: spacing["2"],
                 paddingRight: spacing["2"],
                 lineHeight: "1.3",
+                fontFamily: template === "tech" ? "Courier" : undefined,
               }}
               bold={true}
             >
-              {"•"}
+              {template === "tech" ? "-" : "•"}
             </ResumePDFText>
           )}
           {/* A breaking change was introduced causing text layout to be wider than node's width
