@@ -1,84 +1,56 @@
-# ResumeFlow - AI Career Operating System
+# ResumeFlow
 
-ResumeFlow is a modern, enterprise-grade open source resume builder, parser, and ATS analyzer.
+ResumeFlow is an enterprise-grade, high-performance, open-source resume builder and ATS optimizer built on Next.js. It features a real-time responsive form editor, live PDF rendering using `@react-pdf/renderer`, automatic local storage autosaving, conventional git commit hooks, and dynamic style templates.
 
-[![Continuous Integration](https://github.com/resumeflow-org/resumeflow/actions/workflows/ci.yml/badge.svg)](https://github.com/resumeflow-org/resumeflow/actions/workflows/ci.yml)
-[![CodeQL Security Scan](https://github.com/resumeflow-org/resumeflow/actions/workflows/codeql.yml/badge.svg)](https://github.com/resumeflow-org/resumeflow/actions/workflows/codeql.yml)
-[![Dependabot](https://img.shields.io/badge/dependabot-enabled-blue.svg)](https://github.com/resumeflow-org/resumeflow/blob/main/.github/dependabot.yml)
-[![Docker](https://img.shields.io/badge/docker-compose-blue.svg)](file:///e:/code/ResumeFlow/open-resume/docker-compose.yml)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+## Tech Stack
 
----
+- **Framework**: [Next.js](https://nextjs.org/) (App Router & Pages Router hybrid)
+- **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/) (with custom debounced autosave middleware)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **PDF Compiler**: [@react-pdf/renderer](https://react-pdf.org/)
+- **Testing**: [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+- **Git Quality Gates**: Husky, lint-staged, commitlint
 
-## 🗺️ Project Milestones Dashboard
+## Features
 
-| Milestone    | Goal                                | Status         |
-| :----------- | :---------------------------------- | :------------- |
-| **Epic 1**   | Foundation Framework                | ✅ `COMPLETED` |
-| **Epic 2**   | Unified Dashboard Workspace         | ✅ `COMPLETED` |
-| **Epic 2.5** | Foundation Hardening & Quality Gate | ✅ `COMPLETED` |
-| **Epic 3**   | AI Resume Builder & Editor          | 🚀 `UP NEXT`   |
-| **Epic 4**   | Access Control & Authentication     | 📋 `PLANNED`   |
-| **Epic 5**   | Prisma Database Persistence         | 📋 `PLANNED`   |
-| **Epic 6**   | AI LLM Connection Gateway           | 📋 `PLANNED`   |
-| **Epic 7**   | ATS Match Evaluation Engine         | 📋 `PLANNED`   |
-| **Epic 8**   | Job Description Analyzer            | 📋 `PLANNED`   |
-| **Epic 9**   | Candidate Job Application Tracker   | 📋 `PLANNED`   |
-| **Epic 10**  | Static Portfolio Generator          | 📋 `PLANNED`   |
-| **Epic 11**  | Recruiter Access Portal             | 📋 `PLANNED`   |
-| **Epic 12**  | Monetization & Stripe Billing       | 📋 `PLANNED`   |
-| **Epic 13**  | Template Marketplace Hub            | 📋 `PLANNED`   |
-| **Epic 14**  | Browser Scraper Extension           | 📋 `PLANNED`   |
-| **Epic 15**  | VS Code Sidebar Plugin              | 📋 `PLANNED`   |
-| **Epic 16**  | Telemetry & Production Launch       | 📋 `PLANNED`   |
+1.  **Dual-Pane Editor Layout**: Side-by-side editing pane and pixel-perfect PDF rendering pane.
+2.  **State Auto-Saving**: Debounced middleware automatically saves state changes to localStorage to prevent layout lag.
+3.  **Dynamic Style Templates**: Select between Classic Minimal (serif), Modern Executive (accented sans-serif), and Professional Tech (monospace Courier) layouts.
+4.  **Accessibility**: Fully focusable controls, ARIA radiogroups, and screen-reader `aria-live` validation announcers.
+5.  **Hardcopy/PDF Printing**: Prints compiled resume PDF directly using browser print dialogs.
 
----
+## Installation & Running Locally
 
-## 🛠️ Tech Stack
+1.  **Install dependencies**:
 
-- **Framework**: [Next.js 13](https://nextjs.org/) (App Router, Route Groups, Tailwind CSS)
-- **Language**: [TypeScript](https://www.typescriptlang.org/) (Strict compilation configurations)
-- **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/) (Slice actions)
-- **Validation**: [Zod](https://zod.dev/) (Fail-fast environment parsing schemas)
-- **Test Suite**: [Jest](https://jestjs.io/) & [React Testing Library](https://testing-library.com/)
-
----
-
-## 💻 Local Development
-
-### 1. npm Setup
-
-1.  Install dependencies:
     ```bash
     npm install
     ```
-2.  Duplicate the example environment file:
-    ```bash
-    cp .env.example .env.local
-    ```
-3.  Start the development server:
+
+2.  **Run development server**:
+
     ```bash
     npm run dev
     ```
-    Open [http://localhost:3000](http://localhost:3000) to view.
 
-### 2. Docker Compose
+3.  **Run test suite**:
 
-Start the Next.js app containerized alongside PostgreSQL and Redis cache instances:
+    ```bash
+    npm run test:ci
+    ```
 
-```bash
-docker-compose up --build
-```
+4.  **Compile production bundle**:
+    ```bash
+    npm run build
+    ```
 
-Verify instructions in [DOCKER.md](file:///e:/code/ResumeFlow/open-resume/DOCKER.md).
+## Project Structure
 
----
+- `src/app/` - Application entrypoints, page routing, and context layouts.
+- `src/app/components/` - Form inputs, button controls, and custom layouts.
+- `src/app/components/Resume/ResumePDF/` - React-PDF subcomponents and style schemes.
+- `src/app/lib/` - Redux store configuration, hooks, parsing engines, and schemas.
 
-## 📚 Project Specifications & Guides
+## License
 
-- **Kanban Workflow**: [kanban.md](file:///e:/code/ResumeFlow/open-resume/docs/project-management/kanban.md)
-- **Git & Branch Strategy**: [repository-workflow.md](file:///e:/code/ResumeFlow/open-resume/docs/project-management/repository-workflow.md)
-- **Sprint Cycles**: [sprints.md](file:///e:/code/ResumeFlow/open-resume/docs/project-management/sprints.md)
-- **Docker Instructions**: [DOCKER.md](file:///e:/code/ResumeFlow/open-resume/DOCKER.md)
-- **Contributing Guidelines**: [CONTRIBUTING.md](file:///e:/code/ResumeFlow/open-resume/CONTRIBUTING.md)
-- **Security Disclosures**: [SECURITY.md](file:///e:/code/ResumeFlow/open-resume/SECURITY.md)
+MIT License. See [LICENSE](LICENSE) for details.
