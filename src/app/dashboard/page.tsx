@@ -29,6 +29,33 @@ const mockResumes: MockResume[] = [
   },
 ];
 
+const trackerStats = [
+  {
+    label: "Applied",
+    count: 12,
+    borderColor: "border-blue-100 dark:border-blue-900/30",
+    textColor: "text-blue-600 dark:text-blue-400",
+  },
+  {
+    label: "Interviewing",
+    count: 4,
+    borderColor: "border-amber-100 dark:border-amber-900/30",
+    textColor: "text-amber-600 dark:text-amber-400",
+  },
+  {
+    label: "Offers",
+    count: 2,
+    borderColor: "border-emerald-100 dark:border-emerald-900/30",
+    textColor: "text-emerald-600 dark:text-emerald-400",
+  },
+  {
+    label: "Rejected",
+    count: 1,
+    borderColor: "border-rose-100 dark:border-rose-900/30",
+    textColor: "text-rose-600 dark:text-rose-400",
+  },
+];
+
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
@@ -43,6 +70,28 @@ export default function DashboardPage() {
           </p>
         </div>
       </div>
+
+      {/* Application Tracker Pipeline Section */}
+      <section className="space-y-4">
+        <h2 className="font-heading font-semibold text-xl tracking-tight text-foreground">
+          Application Tracker
+        </h2>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {trackerStats.map((stat) => (
+            <div
+              key={stat.label}
+              className={`flex flex-col rounded-lg border bg-card p-5 transition-all hover:shadow-md ${stat.borderColor}`}
+            >
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                {stat.label}
+              </span>
+              <span className={`mt-2 font-heading text-3xl font-extrabold ${stat.textColor}`}>
+                {stat.count}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Resumes Grid Section */}
       <section className="space-y-4">
