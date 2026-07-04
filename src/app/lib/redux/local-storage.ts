@@ -1,6 +1,5 @@
 import type { RootState } from "lib/redux/store";
-
-// Reference: https://dev.to/igorovic/simplest-way-to-persist-redux-state-to-localstorage-e67
+import type { Middleware } from "@reduxjs/toolkit";
 
 const LOCAL_STORAGE_KEY = "open-resume-state";
 
@@ -24,3 +23,31 @@ export const saveStateToLocalStorage = (state: RootState) => {
 };
 
 export const getHasUsedAppBefore = () => Boolean(loadStateFromLocalStorage());
+
+// Debounce helper
+function debounce<T extends (...args: any[]) => any>(func: T, wait: number) {
+  let timeout: any;
+  return (...args: any[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func(...args);
+    }, wait);
+  };
+}
+
+const debouncedSaveState = debounce((state: RootState) => {
+  saveStateToLocalStorage(state);
+}, 1000);
+
+export const localStorageMiddleware: Middleware =
+  (storeApi) => (next) => (action) => {
+    const result = next(action);
+    const actionType = (action as any).type;
+    if (
+      actionType &&
+      (actionType.startsWith("resume/") || actionType.startsWith("settings/"))
+    ) {
+      debouncedSaveState(storeApi.getState() as RootState);
+    }
+    return result;
+  };

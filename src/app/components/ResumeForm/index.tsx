@@ -1,10 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import {
-  useAppSelector,
-  useSaveStateToLocalStorageOnChange,
-  useSetInitialStore,
-} from "lib/redux/hooks";
+import { useAppSelector, useSetInitialStore } from "lib/redux/hooks";
 import { ShowForm, selectFormsOrder } from "lib/redux/settingsSlice";
 import { ProfileForm } from "components/ResumeForm/ProfileForm";
 import { WorkExperiencesForm } from "components/ResumeForm/WorkExperiencesForm";
@@ -80,7 +76,6 @@ const CollapsiblePanel = ({
 
 export const ResumeForm = () => {
   useSetInitialStore();
-  useSaveStateToLocalStorageOnChange();
 
   const formsOrder = useAppSelector(selectFormsOrder);
   const [isHover, setIsHover] = useState(false);
