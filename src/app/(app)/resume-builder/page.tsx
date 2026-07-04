@@ -7,16 +7,17 @@ import { Resume } from "components/Resume";
 export default function Create() {
   return (
     <Provider store={store}>
-      <main className="relative h-full w-full overflow-hidden bg-gray-50">
-        <div className="grid grid-cols-3 md:grid-cols-6">
-          <div className="col-span-3">
-            <ResumeForm />
-          </div>
-          <div className="col-span-3">
-            <Resume />
-          </div>
-        </div>
-      </main>
+      <div className="grid h-[calc(100vh-8rem)] grid-cols-1 gap-8 overflow-hidden lg:grid-cols-2">
+        {/* Left Pane: Form Editor (Scrollable) */}
+        <section className="flex h-full flex-col overflow-y-auto rounded-lg border border-border bg-card p-6 shadow-sm">
+          <ResumeForm />
+        </section>
+
+        {/* Right Pane: PDF Preview Panel (Scrollable) */}
+        <section className="flex h-full flex-col items-center justify-start overflow-y-auto rounded-lg border border-border bg-zinc-100 p-6 shadow-sm dark:bg-zinc-900">
+          <Resume />
+        </section>
+      </div>
     </Provider>
   );
 }
