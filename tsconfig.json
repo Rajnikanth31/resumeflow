@@ -23,7 +23,8 @@
     // Path Mapping Doc: https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping
     "paths": {
       "public/*": ["../../public/*"],
-      "*": ["*"]
+      "lib/*": ["lib/*"],
+      "components/*": ["components/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
