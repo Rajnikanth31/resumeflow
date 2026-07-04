@@ -14,12 +14,14 @@ const ResumeControlBar = ({
   documentSize,
   document,
   fileName,
+  onLoadingStateChange,
 }: {
   scale: number;
   setScale: (scale: number) => void;
   documentSize: string;
   document: JSX.Element;
   fileName: string;
+  onLoadingStateChange?: (loading: boolean, error: Error | null) => void;
 }) => {
   const { scaleOnResize, setScaleOnResize } = useSetDefaultScale({
     setScale,
@@ -32,6 +34,15 @@ const ResumeControlBar = ({
   useEffect(() => {
     update();
   }, [update, document]);
+
+  useEffect(() => {
+    if (onLoadingStateChange) {
+      onLoadingStateChange(
+        instance.loading,
+        instance.error ? new Error(instance.error) : null
+      );
+    }
+  }, [instance.loading, instance.error, onLoadingStateChange]);
 
   return (
     <div className="sticky bottom-0 left-0 right-0 flex h-[var(--resume-control-bar-height)] items-center justify-center px-[var(--resume-padding)] text-gray-600 lg:justify-between">
@@ -60,12 +71,17 @@ const ResumeControlBar = ({
         </label>
       </div>
       <a
-        className="ml-1 flex items-center gap-1 rounded-md border border-gray-300 px-3 py-0.5 hover:bg-gray-100 lg:ml-8"
-        href={instance.url!}
+        className={`ml-1 flex items-center gap-1 rounded-md border border-gray-300 px-3 py-0.5 hover:bg-gray-100 lg:ml-8 ${
+          instance.loading ? "pointer-events-none opacity-50" : ""
+        }`}
+        href={instance.url || "#"}
         download={fileName}
+        aria-disabled={instance.loading}
       >
         <ArrowDownTrayIcon className="h-4 w-4" />
-        <span className="whitespace-nowrap">Download Resume</span>
+        <span className="whitespace-nowrap">
+          {instance.loading ? "Compiling..." : "Download Resume"}
+        </span>
       </a>
     </div>
   );
