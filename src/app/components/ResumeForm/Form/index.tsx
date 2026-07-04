@@ -42,6 +42,7 @@ export const BaseForm = ({
   <section
     className={`flex flex-col gap-3 rounded-md bg-white p-6 pt-4 shadow transition-opacity duration-200 ${className}`}
   >
+    <div id="sr-list-announcer" aria-live="assertive" className="sr-only" />
     {children}
   </section>
 );
@@ -78,6 +79,21 @@ export const Form = ({
   const isLastForm = useAppSelector(selectIsLastForm(form));
 
   const handleMoveClick = (type: "up" | "down") => {
+    const sectionNameMap: Record<ShowForm, string> = {
+      workExperiences: "work experience",
+      educations: "education history",
+      projects: "project",
+      skills: "skills list",
+      custom: "custom section",
+    };
+    const displayName = sectionNameMap[form] || "section";
+    const alertMsg = `Moved ${displayName} section ${
+      type === "up" ? "up" : "down"
+    }`;
+    const announcer = window.document.getElementById("sr-list-announcer");
+    if (announcer) {
+      announcer.textContent = alertMsg;
+    }
     dispatch(changeFormOrder({ form, type }));
   };
 
@@ -169,6 +185,21 @@ export const FormSection = ({
     }
   };
   const handleMoveClick = (direction: "up" | "down") => {
+    const sectionNameMap: Record<ShowForm, string> = {
+      workExperiences: "work experience",
+      educations: "education history",
+      projects: "project",
+      skills: "skills list",
+      custom: "custom section",
+    };
+    const displayName = sectionNameMap[form] || "item";
+    const alertMsg = `Moved ${displayName} from position ${
+      idx + 1
+    } to position ${direction === "up" ? idx : idx + 2}`;
+    const announcer = window.document.getElementById("sr-list-announcer");
+    if (announcer) {
+      announcer.textContent = alertMsg;
+    }
     dispatch(moveSectionInForm({ form, direction, idx }));
   };
 
