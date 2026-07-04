@@ -44,30 +44,52 @@ export const WorkExperiencesForm = () => {
             showDelete={showDelete}
             deleteButtonTooltipText="Delete job"
           >
-            <Input
-              label="Company"
-              labelClassName="col-span-full"
-              name="company"
-              placeholder="Khan Academy"
-              value={company}
-              onChange={handleWorkExperienceChange}
-            />
-            <Input
-              label="Job Title"
-              labelClassName="col-span-4"
-              name="jobTitle"
-              placeholder="Software Engineer"
-              value={jobTitle}
-              onChange={handleWorkExperienceChange}
-            />
-            <Input
-              label="Date"
-              labelClassName="col-span-2"
-              name="date"
-              placeholder="Jun 2022 - Present"
-              value={date}
-              onChange={handleWorkExperienceChange}
-            />
+            <div className="col-span-full flex flex-col">
+              <Input
+                label="Company"
+                name="company"
+                placeholder="Khan Academy"
+                value={company}
+                onChange={handleWorkExperienceChange}
+              />
+              {!company.trim() && (
+                <p
+                  className="mt-1 text-sm font-normal text-red-500"
+                  role="alert"
+                >
+                  Company name is required.
+                </p>
+              )}
+            </div>
+            <div className="col-span-4 flex flex-col">
+              <Input
+                label="Job Title"
+                name="jobTitle"
+                placeholder="Software Engineer"
+                value={jobTitle}
+                onChange={handleWorkExperienceChange}
+              />
+              {!jobTitle.trim() && (
+                <p
+                  className="mt-1 text-sm font-normal text-red-500"
+                  role="alert"
+                >
+                  Job title is required.
+                </p>
+              )}
+            </div>
+            <div className="col-span-2 flex flex-col">
+              <Input
+                label="Date"
+                name="date"
+                placeholder="Jun 2022 - Present"
+                value={date}
+                onChange={handleWorkExperienceChange}
+              />
+              <span className="mt-1 text-xs font-normal text-zinc-400">
+                e.g., Jun 2022 - Present
+              </span>
+            </div>
             <BulletListTextarea
               label="Description"
               labelClassName="col-span-full"

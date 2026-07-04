@@ -152,7 +152,21 @@ export const FormSection = ({
 }) => {
   const dispatch = useAppDispatch();
   const handleDeleteClick = () => {
-    dispatch(deleteSectionInFormByIdx({ form, idx }));
+    const sectionNameMap: Record<ShowForm, string> = {
+      workExperiences: "work experience",
+      educations: "education history",
+      projects: "project",
+      skills: "skills list",
+      custom: "custom section",
+    };
+    const displayName = sectionNameMap[form] || "this section";
+    if (
+      window.confirm(
+        `Are you sure you want to delete this ${displayName}? This will remove all entered content permanently.`
+      )
+    ) {
+      dispatch(deleteSectionInFormByIdx({ form, idx }));
+    }
   };
   const handleMoveClick = (direction: "up" | "down") => {
     dispatch(moveSectionInForm({ form, direction, idx }));
