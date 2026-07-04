@@ -8,9 +8,9 @@ import { extractResumeFromSections } from "lib/parse-resume-from-pdf/extract-res
 import { ResumeDropzone } from "components/ResumeDropzone";
 import { cx } from "lib/cx";
 import { Heading, Link, Paragraph } from "components/documentation";
-import { ResumeTable } from "resume-parser/ResumeTable";
+import { ResumeTable } from "./ResumeTable";
 import { FlexboxSpacer } from "components/FlexboxSpacer";
-import { ResumeParserAlgorithmArticle } from "resume-parser/ResumeParserAlgorithmArticle";
+import { ResumeParserAlgorithmArticle } from "./ResumeParserAlgorithmArticle";
 
 const RESUME_EXAMPLES = [
   {
