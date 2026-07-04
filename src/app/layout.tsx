@@ -1,6 +1,7 @@
 import "globals.css";
 import { TopNavBar } from "components/TopNavBar";
 import { Analytics } from "@vercel/analytics/react";
+import { ThemeProvider } from "components/ThemeProvider";
 
 export const metadata = {
   title: "ResumeFlow - Build. Optimize. Get Hired.",
@@ -16,9 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <TopNavBar />
-        {children}
-        <Analytics />
+        <ThemeProvider>
+          <TopNavBar />
+          {children}
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   );

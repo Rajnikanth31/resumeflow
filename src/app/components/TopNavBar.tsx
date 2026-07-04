@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import logoSrc from "public/logo.svg";
 import { cx } from "lib/cx";
+import { ThemeToggle } from "components/ThemeToggle";
 
 export const TopNavBar = () => {
   const pathName = usePathname();
@@ -43,6 +44,7 @@ export const TopNavBar = () => {
               {text}
             </Link>
           ))}
+          <ThemeToggle />
 
         </nav>
       </div>
