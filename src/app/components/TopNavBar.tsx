@@ -9,6 +9,11 @@ import { ThemeToggle } from "components/ThemeToggle";
 export const TopNavBar = () => {
   const pathName = usePathname();
   const isHomePage = pathName === "/";
+  const isAppRoute = ["/resume-builder", "/resume-parser", "/resume-import"].includes(pathName);
+
+  if (isAppRoute) {
+    return null;
+  }
 
   return (
     <header
