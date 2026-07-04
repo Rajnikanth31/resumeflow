@@ -37,22 +37,35 @@ export const ProjectsForm = () => {
             showDelete={showDelete}
             deleteButtonTooltipText={"Delete project"}
           >
-            <Input
-              name="project"
-              label="Project Name"
-              placeholder="OpenResume"
-              value={project}
-              onChange={handleProjectChange}
-              labelClassName="col-span-4"
-            />
-            <Input
-              name="date"
-              label="Date"
-              placeholder="Winter 2022"
-              value={date}
-              onChange={handleProjectChange}
-              labelClassName="col-span-2"
-            />
+            <div className="col-span-4 flex flex-col">
+              <Input
+                name="project"
+                label="Project Name"
+                placeholder="OpenResume"
+                value={project}
+                onChange={handleProjectChange}
+              />
+              {!project.trim() && (
+                <p
+                  className="mt-1 text-sm font-normal text-red-500"
+                  role="alert"
+                >
+                  Project name is required.
+                </p>
+              )}
+            </div>
+            <div className="col-span-2 flex flex-col">
+              <Input
+                name="date"
+                label="Date"
+                placeholder="Winter 2022"
+                value={date}
+                onChange={handleProjectChange}
+              />
+              <span className="mt-1 text-xs font-normal text-zinc-400">
+                e.g., Winter 2022
+              </span>
+            </div>
             <BulletListTextarea
               name="descriptions"
               label="Description"
