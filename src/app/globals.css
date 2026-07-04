@@ -5,7 +5,7 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-primary outline-theme-purple inline-block rounded-full px-6 py-2 font-semibold shadow-sm;
+    @apply outline-theme-purple inline-block rounded-full bg-primary px-6 py-2 font-semibold shadow-sm;
   }
   .text-primary {
     @apply bg-gradient-to-r from-[color:var(--theme-purple)] to-[color:var(--theme-blue)] bg-clip-text text-transparent !important;
@@ -33,8 +33,8 @@
   --success: 150 80% 40%;
 
   --theme-purple: #6366f1; /* Indigo-500 */
-  --theme-blue: #10b981;   /* Emerald-500 */
-  
+  --theme-blue: #10b981; /* Emerald-500 */
+
   /* Keep the below variable names in sync with CSS_VARIABLES in globals-css.ts */
   --top-nav-bar-height: 3.5rem;
   --resume-control-bar-height: 3rem;
@@ -48,4 +48,29 @@
   --border: 240 3.7% 15.9%;
   --primary: 250 90% 65%;
   --success: 150 80% 50%;
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  header,
+  nav,
+  section:first-of-type,
+  div.sticky,
+  .btn,
+  button,
+  a {
+    display: none !important;
+  }
+  section:last-of-type {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
 }

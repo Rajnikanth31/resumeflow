@@ -4,6 +4,7 @@ import { useSetDefaultScale } from "components/Resume/hooks";
 import {
   MagnifyingGlassIcon,
   ArrowDownTrayIcon,
+  PrinterIcon,
 } from "@heroicons/react/24/outline";
 import { usePDF } from "@react-pdf/renderer";
 import dynamic from "next/dynamic";
@@ -44,6 +45,21 @@ const ResumeControlBar = ({
     }
   }, [instance.loading, instance.error, onLoadingStateChange]);
 
+  const handlePrint = () => {
+    if (!instance.url) return;
+    const iframe = window.document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = instance.url;
+    iframe.onload = () => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      setTimeout(() => {
+        window.document.body.removeChild(iframe);
+      }, 1000);
+    };
+    window.document.body.appendChild(iframe);
+  };
+
   return (
     <div className="sticky bottom-0 left-0 right-0 flex h-[var(--resume-control-bar-height)] items-center justify-center px-[var(--resume-padding)] text-gray-600 lg:justify-between">
       <div className="flex items-center gap-2">
@@ -70,19 +86,31 @@ const ResumeControlBar = ({
           <span className="select-none">Autoscale</span>
         </label>
       </div>
-      <a
-        className={`ml-1 flex items-center gap-1 rounded-md border border-gray-300 px-3 py-0.5 hover:bg-gray-100 lg:ml-8 ${
-          instance.loading ? "pointer-events-none opacity-50" : ""
-        }`}
-        href={instance.url || "#"}
-        download={fileName}
-        aria-disabled={instance.loading}
-      >
-        <ArrowDownTrayIcon className="h-4 w-4" />
-        <span className="whitespace-nowrap">
-          {instance.loading ? "Compiling..." : "Download Resume"}
-        </span>
-      </a>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={handlePrint}
+          className={`ml-1 flex items-center gap-1 rounded-md border border-gray-300 px-3 py-0.5 hover:bg-gray-100 ${
+            instance.loading ? "pointer-events-none opacity-50" : ""
+          }`}
+          disabled={instance.loading}
+        >
+          <PrinterIcon className="h-4 w-4" />
+          <span className="whitespace-nowrap">Print</span>
+        </button>
+        <a
+          className={`flex items-center gap-1 rounded-md border border-gray-300 px-3 py-0.5 hover:bg-gray-100 ${
+            instance.loading ? "pointer-events-none opacity-50" : ""
+          }`}
+          href={instance.url || "#"}
+          download={fileName}
+          aria-disabled={instance.loading}
+        >
+          <ArrowDownTrayIcon className="h-4 w-4" />
+          <span className="whitespace-nowrap">
+            {instance.loading ? "Compiling..." : "Download Resume"}
+          </span>
+        </a>
+      </div>
     </div>
   );
 };
