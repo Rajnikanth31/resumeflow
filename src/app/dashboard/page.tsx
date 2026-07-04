@@ -70,6 +70,17 @@ const atsMetrics = [
   { name: "Quantifiable Impact", score: 78, color: "bg-amber-600 dark:bg-amber-500" },
 ];
 
+const mockActivities = [
+  { id: "act-1", text: "Optimized Software Engineer Core Resume using AI", time: "2 hours ago" },
+  { id: "act-2", text: "Scanned Product Manager Variant against Amazon JD", time: "1 day ago" },
+  { id: "act-3", text: "Applied to Senior Engineer position at Stripe", time: "2 days ago" },
+];
+
+const mockNotifications = [
+  { id: "not-1", text: "AI Suggestion: Add 'GraphQL API design' key phrase to maximize match score", type: "suggestion" },
+  { id: "not-2", text: "ResumeFlow v1.1 update: NestJS API routing upgrades are live", type: "update" },
+];
+
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
@@ -238,6 +249,69 @@ export default function DashboardPage() {
           ))}
         </div>
       </section>
+
+      {/* Splits: Recent Activity & Notifications */}
+      <div className="grid gap-6 md:grid-cols-2 border-t border-border pt-8">
+        {/* Recent Activity */}
+        <section className="rounded-lg border border-border bg-card p-5 space-y-4">
+          <h2 className="font-heading font-semibold text-lg tracking-tight text-foreground">
+            Recent Activity
+          </h2>
+          <div className="flow-root">
+            <ul className="-mb-8">
+              {mockActivities.map((activity, i) => (
+                <li key={activity.id}>
+                  <div className="relative pb-8">
+                    {i !== mockActivities.length - 1 ? (
+                      <span className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-zinc-800" aria-hidden="true" />
+                    ) : null}
+                    <div className="relative flex space-x-3">
+                      <div>
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0 pt-1.5 flex justify-between space-x-4">
+                        <div>
+                          <p className="text-sm text-foreground">{activity.text}</p>
+                        </div>
+                        <div className="text-right text-xs whitespace-nowrap text-gray-400">
+                          <time>{activity.time}</time>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* Notifications */}
+        <section className="rounded-lg border border-border bg-card p-5 space-y-4">
+          <h2 className="font-heading font-semibold text-lg tracking-tight text-foreground">
+            Notifications
+          </h2>
+          <div className="space-y-4">
+            {mockNotifications.map((notif) => (
+              <div 
+                key={notif.id}
+                className={`flex gap-3 rounded-lg border p-4 bg-card ${
+                  notif.type === "suggestion"
+                    ? "border-primary/20 bg-primary/5 text-primary"
+                    : "border-border text-foreground"
+                }`}
+              >
+                <div className="flex-1">
+                  <p className="text-sm font-medium">{notif.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
