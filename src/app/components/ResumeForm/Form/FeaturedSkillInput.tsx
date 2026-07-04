@@ -22,6 +22,7 @@ export const FeaturedSkillInput = ({
         type="text"
         value={skill}
         placeholder={placeholder}
+        aria-label={placeholder}
         onChange={(e) => setSkillRating(e.target.value, rating)}
         className={INPUT_CLASS_NAME}
       />
@@ -47,27 +48,44 @@ const CircleRating = ({
   const [hoverRating, setHoverRating] = useState<number | null>(null);
 
   return (
-    <div className="flex items-center p-2">
-      {[...Array(numCircles)].map((_, idx) => (
-        <div
-          className={`cursor-pointer p-0.5`}
-          key={idx}
-          onClick={() => setRating(idx)}
-          onMouseEnter={() => setHoverRating(idx)}
-          onMouseLeave={() => setHoverRating(null)}
-        >
+    <div
+      className="flex items-center p-2"
+      role="radiogroup"
+      aria-label="Skill proficiency rating"
+    >
+      {[...Array(numCircles)].map((_, idx) => {
+        const ratingValue = idx + 1;
+        return (
           <div
-            className="h-5 w-5 rounded-full transition-transform duration-200 hover:scale-[120%] "
-            style={{
-              backgroundColor:
-                (hoverRating !== null && hoverRating >= idx) ||
-                (hoverRating === null && rating >= idx)
-                  ? circleColor
-                  : "#d1d5db", //gray-300
+            className="cursor-pointer rounded-full p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            key={idx}
+            role="radio"
+            aria-checked={rating >= idx}
+            aria-label={`Rate ${ratingValue} out of 5`}
+            tabIndex={0}
+            onClick={() => setRating(idx)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setRating(idx);
+              }
             }}
-          />
-        </div>
-      ))}
+            onMouseEnter={() => setHoverRating(idx)}
+            onMouseLeave={() => setHoverRating(null)}
+          >
+            <div
+              className="h-5 w-5 rounded-full transition-transform duration-200 hover:scale-[120%] "
+              style={{
+                backgroundColor:
+                  (hoverRating !== null && hoverRating >= idx) ||
+                  (hoverRating === null && rating >= idx)
+                    ? circleColor
+                    : "#d1d5db", //gray-300
+              }}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 };
