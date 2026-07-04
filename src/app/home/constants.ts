@@ -10,6 +10,7 @@ import { deepClone } from "lib/deep-clone";
 export const END_HOME_RESUME: Resume = {
   profile: {
     name: "John Doe",
+    role: "Software Engineer",
     summary:
       "Software engineer obsessed with building exceptional products that people love",
     email: "hello@openresume.com",

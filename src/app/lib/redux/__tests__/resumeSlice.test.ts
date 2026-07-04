@@ -85,6 +85,7 @@ describe("resumeSlice Reducers", () => {
       ...initialResumeState,
       profile: {
         name: "Alice",
+        role: "Developer",
         summary: "Lead Developer",
         email: "alice@test.com",
         phone: "123",

@@ -1,5 +1,6 @@
 export interface ResumeProfile {
   name: string;
+  role: string;
   email: string;
   phone: string;
   url: string;

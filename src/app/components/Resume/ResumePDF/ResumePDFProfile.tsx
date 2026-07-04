@@ -20,7 +20,7 @@ export const ResumePDFProfile = ({
   themeColor: string;
   isPDF: boolean;
 }) => {
-  const { name, email, phone, url, summary, location } = profile;
+  const { name, role, email, phone, url, summary, location } = profile;
   const iconProps = { email, phone, location, url };
 
   return (
@@ -32,7 +32,19 @@ export const ResumePDFProfile = ({
       >
         {name}
       </ResumePDFText>
-      {summary && <ResumePDFText>{summary}</ResumePDFText>}
+      {role && (
+        <ResumePDFText
+          bold={true}
+          style={{ fontSize: "12pt", marginTop: spacing["0.5"] }}
+        >
+          {role}
+        </ResumePDFText>
+      )}
+      {summary && (
+        <ResumePDFText style={{ marginTop: spacing["1"] }}>
+          {summary}
+        </ResumePDFText>
+      )}
       <View
         style={{
           ...styles.flexRowBetween,
