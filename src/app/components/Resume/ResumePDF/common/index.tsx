@@ -48,6 +48,31 @@ export const ResumePDFSection = ({
             {heading}
           </Text>
         </View>
+      ) : template === "modern" ? (
+        <View style={{ ...styles.flexRow, alignItems: "center" }}>
+          {themeColor && (
+            <View
+              style={{
+                height: "14pt",
+                width: "3pt",
+                backgroundColor: themeColor,
+                marginRight: spacing["2.5"],
+              }}
+              debug={DEBUG_RESUME_PDF_FLAG}
+            />
+          )}
+          <Text
+            style={{
+              fontWeight: "bold",
+              letterSpacing: "0.3pt",
+              fontSize: "12pt",
+              color: DEFAULT_FONT_COLOR,
+            }}
+            debug={DEBUG_RESUME_PDF_FLAG}
+          >
+            {heading}
+          </Text>
+        </View>
       ) : (
         <View style={{ ...styles.flexRow, alignItems: "center" }}>
           {themeColor && (
