@@ -3,9 +3,9 @@ import { TopNavBar } from "components/TopNavBar";
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
-  title: "OpenResume - Free Open-source Resume Builder and Parser",
+  title: "ResumeFlow - Build. Optimize. Get Hired.",
   description:
-    "OpenResume is a free, open-source, and powerful resume builder that allows anyone to create a modern professional resume in 3 simple steps. For those who have an existing resume, OpenResume also provides a resume parser to help test and confirm its ATS readability.",
+    "ResumeFlow is an AI Career Operating System that helps you build, optimize, and track your resumes and job applications with ease.",
 };
 
 export default function RootLayout({
