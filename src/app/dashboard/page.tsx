@@ -56,6 +56,20 @@ const trackerStats = [
   },
 ];
 
+const atsHistory = [
+  { date: "May 10", score: 60 },
+  { date: "May 22", score: 68 },
+  { date: "Jun 05", score: 72 },
+  { date: "Jun 18", score: 81 },
+  { date: "Jul 04", score: 88 },
+];
+
+const atsMetrics = [
+  { name: "Keyword Match", score: 92, color: "bg-indigo-600 dark:bg-indigo-500" },
+  { name: "Format & Structure", score: 95, color: "bg-emerald-600 dark:bg-emerald-500" },
+  { name: "Quantifiable Impact", score: 78, color: "bg-amber-600 dark:bg-amber-500" },
+];
+
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
@@ -90,6 +104,62 @@ export default function DashboardPage() {
               </span>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ATS Diagnostics & Analytics Section */}
+      <section className="space-y-4">
+        <h2 className="font-heading font-semibold text-xl tracking-tight text-foreground">
+          ATS Diagnostics & Analytics
+        </h2>
+        <div className="grid gap-6 md:grid-cols-3">
+          {/* Chart Panel */}
+          <div className="rounded-lg border border-border bg-card p-5 md:col-span-2 space-y-4">
+            <h3 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+              Score Scan History
+            </h3>
+            <div className="h-44 w-full flex items-end justify-between pt-4">
+              {atsHistory.map((scan) => (
+                <div key={scan.date} className="flex flex-col items-center gap-2 flex-1">
+                  <div className="relative flex flex-col justify-end w-full h-32 items-center">
+                    <span className="absolute -top-6 text-xs font-bold text-primary">
+                      {scan.score}%
+                    </span>
+                    <div 
+                      style={{ height: `${scan.score}%` }}
+                      className="w-10 rounded-t bg-gradient-to-t from-primary/30 to-primary transition-all duration-500 hover:opacity-80"
+                    />
+                  </div>
+                  <span className="text-[10px] font-medium text-gray-400">
+                    {scan.date}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Metric Breakdown Panel */}
+          <div className="rounded-lg border border-border bg-card p-5 space-y-5">
+            <h3 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+              Diagnostic Breakdown
+            </h3>
+            <div className="space-y-4">
+              {atsMetrics.map((metric) => (
+                <div key={metric.name} className="space-y-1.5">
+                  <div className="flex justify-between text-xs">
+                    <span className="font-medium text-gray-500 dark:text-gray-400">{metric.name}</span>
+                    <span className="font-semibold text-foreground">{metric.score}%</span>
+                  </div>
+                  <div className="h-2 w-full rounded-full bg-gray-100 dark:bg-zinc-800">
+                    <div 
+                      className={`h-full rounded-full ${metric.color}`}
+                      style={{ width: `${metric.score}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
