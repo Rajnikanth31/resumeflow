@@ -10,6 +10,7 @@ import { initialResumeState, setResume } from "lib/redux/resumeSlice";
 import {
   initialSettings,
   setSettings,
+  selectSettings,
   type Settings,
 } from "lib/redux/settingsSlice";
 import { deepMerge } from "lib/deep-merge";
@@ -41,4 +42,15 @@ export const useSetInitialStore = () => {
       dispatch(setSettings(mergedSettingsState));
     }
   }, []);
+};
+
+export const useResumeSettings = () => {
+  const settings = useAppSelector(selectSettings);
+  return {
+    themeColor: settings.themeColor || "#38bdf8",
+    fontFamily: settings.fontFamily || "Roboto",
+    fontSize: settings.fontSize || "11",
+    documentSize: settings.documentSize || "Letter",
+    settings,
+  };
 };
