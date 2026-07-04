@@ -49,38 +49,76 @@ export const EducationsForm = () => {
             showDelete={showDelete}
             deleteButtonTooltipText="Delete school"
           >
-            <Input
-              label="School"
-              labelClassName="col-span-4"
-              name="school"
-              placeholder="Cornell University"
-              value={school}
-              onChange={handleEducationChange}
-            />
-            <Input
-              label="Date"
-              labelClassName="col-span-2"
-              name="date"
-              placeholder="May 2018"
-              value={date}
-              onChange={handleEducationChange}
-            />
-            <Input
-              label="Degree & Major"
-              labelClassName="col-span-4"
-              name="degree"
-              placeholder="Bachelor of Science in Computer Engineering"
-              value={degree}
-              onChange={handleEducationChange}
-            />
-            <Input
-              label="GPA"
-              labelClassName="col-span-2"
-              name="gpa"
-              placeholder="3.81"
-              value={gpa}
-              onChange={handleEducationChange}
-            />
+            <div className="col-span-4 flex flex-col">
+              <Input
+                label="School"
+                name="school"
+                placeholder="Cornell University"
+                value={school}
+                onChange={handleEducationChange}
+              />
+              {!school.trim() && (
+                <p
+                  className="mt-1 text-sm font-normal text-red-500"
+                  role="alert"
+                >
+                  School name is required.
+                </p>
+              )}
+            </div>
+            <div className="col-span-2 flex flex-col">
+              <Input
+                label="Date"
+                name="date"
+                placeholder="May 2018"
+                value={date}
+                onChange={handleEducationChange}
+              />
+              <span className="mt-1 text-xs font-normal text-zinc-400">
+                e.g., May 2018
+              </span>
+            </div>
+            <div className="col-span-4 flex flex-col">
+              <Input
+                label="Degree & Major"
+                name="degree"
+                placeholder="Bachelor of Science in Computer Engineering"
+                value={degree}
+                onChange={handleEducationChange}
+              />
+              {!degree.trim() && (
+                <p
+                  className="mt-1 text-sm font-normal text-red-500"
+                  role="alert"
+                >
+                  Degree is required.
+                </p>
+              )}
+            </div>
+            <div className="col-span-2 flex flex-col">
+              <Input
+                label="GPA"
+                name="gpa"
+                placeholder="3.81"
+                value={gpa}
+                onChange={handleEducationChange}
+              />
+              {(() => {
+                if (!gpa.trim()) return null;
+                const gpaNum = parseFloat(gpa);
+                if (isNaN(gpaNum) || gpaNum < 0.0 || gpaNum > 4.0) {
+                  return (
+                    <p
+                      className="mt-1 text-sm font-normal text-red-500"
+                      role="alert"
+                    >
+                      GPA must be 0.0 - 4.0
+                    </p>
+                  );
+                }
+                return null;
+              })()}
+            </div>
             <div className="relative col-span-full">
               <BulletListTextarea
                 label="Additional Information (Optional)"
