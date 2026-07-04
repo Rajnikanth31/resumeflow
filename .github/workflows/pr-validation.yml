@@ -1,0 +1,40 @@
+name: Pull Request Validation
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint Check
+        run: npm run lint
+
+      - name: TypeScript Typecheck
+        run: npx tsc --noEmit
+
+      - name: Run Tests
+        run: npm run test:ci
+
+      - name: Build Check
+        run: npm run build
+
+      - name: Report Status Summary
+        run: |
+          echo "### PR Validation Succeeded 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "- TypeScript compilation passed." >> $GITHUB_STEP_SUMMARY
+          echo "- Linter validation passed." >> $GITHUB_STEP_SUMMARY
+          echo "- Jest tests passed." >> $GITHUB_STEP_SUMMARY

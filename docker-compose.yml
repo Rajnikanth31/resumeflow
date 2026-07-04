@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/resumeflow?schema=public
+      - REDIS_URL=redis://redis:6379
+      - NEXTAUTH_SECRET=dev-secret-key-must-be-long-and-secure-hash-values
+      - NEXTAUTH_URL=http://localhost:3000
+      - AI_PROVIDER=lm-studio
+      - AI_ENDPOINT=http://localhost:1234/v1
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=resumeflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:

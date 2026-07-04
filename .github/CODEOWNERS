@@ -1,0 +1,28 @@
+# CODEOWNERS for ResumeFlow
+
+# Global fallback owner
+*       @resumeflow-org/core-maintainers
+
+# Frontend Ownership
+/src/app/components/     @resumeflow-org/frontend
+/src/app/(app)/          @resumeflow-org/frontend
+/tailwind.config.js       @resumeflow-org/frontend
+
+# Backend Ownership
+/src/app/lib/            @resumeflow-org/backend
+/src/app/api/            @resumeflow-org/backend
+
+# Database Ownership
+/prisma/                 @resumeflow-org/database
+
+# AI Ownership
+/src/app/lib/config.ts   @resumeflow-org/ai
+
+# Infrastructure Ownership
+/Dockerfile              @resumeflow-org/infrastructure
+/docker-compose.yml      @resumeflow-org/infrastructure
+/.github/workflows/      @resumeflow-org/infrastructure
+
+# Documentation Ownership
+/docs/                   @resumeflow-org/docs-maintainers
+/README.md               @resumeflow-org/docs-maintainers
