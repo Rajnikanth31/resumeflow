@@ -1,4 +1,5 @@
 @import url("/fonts/fonts.css");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,10 +26,27 @@
 }
 
 :root {
-  --theme-purple: #5d52d9;
-  --theme-blue: #4fc5eb;
+  --background: 0 0% 100%;
+  --foreground: 224 71.4% 4.1%;
+  --card: 0 0% 98%;
+  --border: 220 13% 91%;
+  --primary: 250 85% 55%;
+  --success: 150 80% 40%;
+
+  --theme-purple: #6366f1; /* Indigo-500 */
+  --theme-blue: #10b981;   /* Emerald-500 */
+  
   /* Keep the below variable names in sync with CSS_VARIABLES in globals-css.ts */
   --top-nav-bar-height: 3.5rem;
   --resume-control-bar-height: 3rem;
   --resume-padding: 1.5rem;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 6%;
+  --border: 240 3.7% 15.9%;
+  --primary: 250 90% 65%;
+  --success: 150 80% 50%;
 }
