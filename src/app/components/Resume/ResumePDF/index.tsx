@@ -46,6 +46,7 @@ export const ResumePDF = ({
     formToShow,
     formsOrder,
     showBulletPoints,
+    template = "classic",
   } = settings;
   const themeColor = settings.themeColor || DEFAULT_FONT_COLOR;
 
@@ -57,6 +58,7 @@ export const ResumePDF = ({
         heading={formToHeading["workExperiences"]}
         workExperiences={workExperiences}
         themeColor={themeColor}
+        template={template}
       />
     ),
     educations: () => (
@@ -65,6 +67,7 @@ export const ResumePDF = ({
         educations={educations}
         themeColor={themeColor}
         showBulletPoints={showBulletPoints["educations"]}
+        template={template}
       />
     ),
     projects: () => (
@@ -72,6 +75,7 @@ export const ResumePDF = ({
         heading={formToHeading["projects"]}
         projects={projects}
         themeColor={themeColor}
+        template={template}
       />
     ),
     skills: () => (
@@ -80,6 +84,7 @@ export const ResumePDF = ({
         skills={skills}
         themeColor={themeColor}
         showBulletPoints={showBulletPoints["skills"]}
+        template={template}
       />
     ),
     custom: () => (
@@ -88,9 +93,15 @@ export const ResumePDF = ({
         custom={custom}
         themeColor={themeColor}
         showBulletPoints={showBulletPoints["custom"]}
+        template={template}
       />
     ),
   };
+
+  const pagePadding =
+    template === "classic"
+      ? `${spacing[0]} ${spacing[14]}`
+      : `${spacing[0]} ${spacing[20]}`;
 
   return (
     <>
@@ -116,7 +127,7 @@ export const ResumePDF = ({
           <View
             style={{
               ...styles.flexCol,
-              padding: `${spacing[0]} ${spacing[20]}`,
+              padding: pagePadding,
             }}
           >
             <ResumePDFProfile

@@ -11,13 +11,19 @@ export const ResumePDFProject = ({
   heading,
   projects,
   themeColor,
+  template,
 }: {
   heading: string;
   projects: ResumeProject[];
   themeColor: string;
+  template?: string;
 }) => {
   return (
-    <ResumePDFSection themeColor={themeColor} heading={heading}>
+    <ResumePDFSection
+      themeColor={themeColor}
+      heading={heading}
+      template={template}
+    >
       {projects.map(({ project, date, descriptions }, idx) => (
         <View key={idx}>
           <View

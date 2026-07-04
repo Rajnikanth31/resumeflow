@@ -12,11 +12,13 @@ export const ResumePDFSkills = ({
   skills,
   themeColor,
   showBulletPoints,
+  template,
 }: {
   heading: string;
   skills: ResumeSkills;
   themeColor: string;
   showBulletPoints: boolean;
+  template?: string;
 }) => {
   const { descriptions, featuredSkills } = skills;
   const featuredSkillsWithText = featuredSkills.filter((item) => item.skill);
@@ -27,7 +29,11 @@ export const ResumePDFSkills = ({
   ];
 
   return (
-    <ResumePDFSection themeColor={themeColor} heading={heading}>
+    <ResumePDFSection
+      themeColor={themeColor}
+      heading={heading}
+      template={template}
+    >
       {featuredSkillsWithText.length > 0 && (
         <View style={{ ...styles.flexRowBetween, marginTop: spacing["0.5"] }}>
           {featuredSkillsPair.map((pair, idx) => (

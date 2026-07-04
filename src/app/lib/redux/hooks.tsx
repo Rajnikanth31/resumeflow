@@ -47,6 +47,7 @@ export const useSetInitialStore = () => {
 export const useResumeSettings = () => {
   const settings = useAppSelector(selectSettings);
   return {
+    template: settings.template || "classic",
     themeColor: settings.themeColor || "#38bdf8",
     fontFamily: settings.fontFamily || "Roboto",
     fontSize: settings.fontSize || "11",

@@ -7,11 +7,13 @@ import { DEFAULT_FONT_COLOR } from "lib/redux/settingsSlice";
 export const ResumePDFSection = ({
   themeColor,
   heading,
+  template = "classic",
   style = {},
   children,
 }: {
   themeColor?: string;
   heading?: string;
+  template?: string;
   style?: Style;
   children: React.ReactNode;
 }) => (
@@ -19,34 +21,57 @@ export const ResumePDFSection = ({
     style={{
       ...styles.flexCol,
       gap: spacing["2"],
-      marginTop: spacing["5"],
+      marginTop: template === "classic" ? spacing["3.5"] : spacing["5"],
       ...style,
     }}
   >
-    {heading && (
-      <View style={{ ...styles.flexRow, alignItems: "center" }}>
-        {themeColor && (
-          <View
+    {heading &&
+      (template === "classic" ? (
+        <View
+          style={{
+            borderBottomWidth: "0.75pt",
+            borderBottomColor: "#d1d5db",
+            paddingBottom: "2pt",
+            marginBottom: spacing["1"],
+            width: "100%",
+          }}
+        >
+          <Text
             style={{
-              height: "3.75pt",
-              width: "30pt",
-              backgroundColor: themeColor,
-              marginRight: spacing["3.5"],
+              fontWeight: "bold",
+              letterSpacing: "0.3pt",
+              fontSize: "12pt",
+              color: themeColor || DEFAULT_FONT_COLOR,
             }}
             debug={DEBUG_RESUME_PDF_FLAG}
-          />
-        )}
-        <Text
-          style={{
-            fontWeight: "bold",
-            letterSpacing: "0.3pt", // tracking-wide -> 0.025em * 12 pt = 0.3pt
-          }}
-          debug={DEBUG_RESUME_PDF_FLAG}
-        >
-          {heading}
-        </Text>
-      </View>
-    )}
+          >
+            {heading}
+          </Text>
+        </View>
+      ) : (
+        <View style={{ ...styles.flexRow, alignItems: "center" }}>
+          {themeColor && (
+            <View
+              style={{
+                height: "3.75pt",
+                width: "30pt",
+                backgroundColor: themeColor,
+                marginRight: spacing["3.5"],
+              }}
+              debug={DEBUG_RESUME_PDF_FLAG}
+            />
+          )}
+          <Text
+            style={{
+              fontWeight: "bold",
+              letterSpacing: "0.3pt", // tracking-wide -> 0.025em * 12 pt = 0.3pt
+            }}
+            debug={DEBUG_RESUME_PDF_FLAG}
+          >
+            {heading}
+          </Text>
+        </View>
+      ))}
     {children}
   </View>
 );

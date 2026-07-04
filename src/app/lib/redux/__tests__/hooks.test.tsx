@@ -23,6 +23,7 @@ describe("useResumeSettings Hook", () => {
 
     const { result } = renderHook(() => useResumeSettings(), { wrapper });
 
+    expect(result.current.template).toBe("classic");
     expect(result.current.themeColor).toBe("#38bdf8");
     expect(result.current.fontFamily).toBe("Roboto");
     expect(result.current.fontSize).toBe("11");
