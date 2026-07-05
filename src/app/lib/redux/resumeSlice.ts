@@ -75,6 +75,9 @@ export type CreateChangeActionWithDescriptions<T> = {
   | { field: "descriptions"; value: string[] }
 );
 
+const MAX_HISTORY = 10;
+const resumeHistoryStack: Resume[] = [];
+
 export const resumeSlice = createSlice({
   name: "resume",
   initialState: initialResumeState,
@@ -198,6 +201,43 @@ export const resumeSlice = createSlice({
     setResume: (draft, action: PayloadAction<Resume>) => {
       return action.payload;
     },
+    applySuggestion: (
+      draft,
+      action: PayloadAction<{
+        section: "profile" | "workExperiences" | "educations" | "projects" | "skills" | "custom";
+        field?: string;
+        idx?: number;
+        content: string;
+      }>
+    ) => {
+      if (resumeHistoryStack.length >= MAX_HISTORY) {
+        resumeHistoryStack.shift();
+      }
+      const currentState = JSON.parse(JSON.stringify(draft));
+      resumeHistoryStack.push(currentState);
+
+      const { section, field, idx, content } = action.payload;
+
+      if (section === "profile" && field) {
+        draft.profile[field as keyof ResumeProfile] = content;
+      } else if (
+        (section === "workExperiences" || section === "educations" || section === "projects") &&
+        idx !== undefined &&
+        field
+      ) {
+        if (field === "descriptions") {
+          draft[section][idx].descriptions = content.split("\n").filter(Boolean);
+        } else {
+          (draft[section][idx] as any)[field] = content;
+        }
+      }
+    },
+    undoLastApply: (draft) => {
+      const prevState = resumeHistoryStack.pop();
+      if (prevState) {
+        return prevState;
+      }
+    },
   },
 });
 
@@ -212,6 +252,8 @@ export const {
   moveSectionInForm,
   deleteSectionInFormByIdx,
   setResume,
+  applySuggestion,
+  undoLastApply,
 } = resumeSlice.actions;
 
 export const selectResume = (state: RootState) => state.resume;

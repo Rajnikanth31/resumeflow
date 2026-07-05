@@ -10,6 +10,8 @@ import reducer, {
   deleteSectionInFormByIdx,
   moveSectionInForm,
   setResume,
+  applySuggestion,
+  undoLastApply,
   initialResumeState,
 } from "../resumeSlice";
 import type { Resume } from "../types";
@@ -95,5 +97,22 @@ describe("resumeSlice Reducers", () => {
     };
     const nextState = reducer(initialResumeState, setResume(customResume));
     expect(nextState.profile.name).toBe("Alice");
+  });
+
+  it("should handle applySuggestion and undoLastApply", () => {
+    // 1. Apply suggestions
+    const stateWithSuggestion = reducer(
+      initialResumeState,
+      applySuggestion({
+        section: "profile",
+        field: "summary",
+        content: "Expert Engineer summary",
+      })
+    );
+    expect(stateWithSuggestion.profile.summary).toBe("Expert Engineer summary");
+
+    // 2. Undo suggestion
+    const undoneState = reducer(stateWithSuggestion, undoLastApply());
+    expect(undoneState.profile.summary).toBe(""); // Returns to initialProfile state
   });
 });
