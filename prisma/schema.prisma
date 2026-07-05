@@ -82,6 +82,7 @@ model User {
   notifications UserNotification[]
   conversations Conversation[]
   suggestionLogs AISuggestionLog[]
+  jobs          JobDescription[]
 }
 
 model Account {
@@ -172,6 +173,7 @@ model Resume {
   versions     ResumeVersion[]
   atsReports   ATSReport[]
   shortlists   ShortlistEntry[]
+  jobLinks     ResumeJobLink[]
 
   user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -515,4 +517,57 @@ enum FeedbackState {
   NONE
   HELPFUL
   NOT_HELPFUL
+}
+
+enum JobStatusCollection {
+  SAVED
+  APPLIED
+  INTERVIEW
+  OFFER
+  REJECTED
+  ARCHIVED
+}
+
+model JobDescription {
+  id              String              @id @default(uuid())
+  userId          String
+  title           String
+  company         String
+  description     String              @db.Text
+  industry        String?
+  remoteType      String?
+  salaryMin       Float?
+  salaryMax       Float?
+  seniority       String?
+  techStack       String[]
+  hiringFocus     String?
+  matchScore      Float?
+  statusCollection JobStatusCollection @default(SAVED)
+  
+  matchedKeywords String[]
+  weakKeywords    String[]
+  missingKeywords String[]
+
+  matchedSkills   String[]
+  missingSkills   String[]
+  suggestedSkills String[]
+  learningRecommendations String[]
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resumeLinks     ResumeJobLink[]
+}
+
+model ResumeJobLink {
+  id               String         @id @default(uuid())
+  resumeId         String
+  jobDescriptionId String
+  createdAt        DateTime       @default(now())
+
+  resume           Resume         @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  jobDescription   JobDescription @relation(fields: [jobDescriptionId], references: [id], onDelete: Cascade)
+
+  @@unique([resumeId, jobDescriptionId])
 }
