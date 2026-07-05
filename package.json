@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
+    "@prisma/client": "^5.22.0",
     "@react-pdf/renderer": "^3.1.10",
     "@reduxjs/toolkit": "^1.9.5",
     "@types/node": "20.2.5",
@@ -45,6 +46,7 @@
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
     "lint-staged": "^17.0.8",
-    "prettier-plugin-tailwindcss": "^0.2.1"
+    "prettier-plugin-tailwindcss": "^0.2.1",
+    "prisma": "^5.22.0"
   }
 }
