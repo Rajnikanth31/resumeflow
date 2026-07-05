@@ -100,6 +100,30 @@ export class AIPromptRegistry {
         }),
       },
     },
+    "resume-tailor": {
+      "v1": {
+        id: "resume-tailor",
+        version: "v1",
+        systemTemplate: "You are an expert resume optimizer. Rewrite the resume profile summary, work descriptions, and project descriptions to highlight match alignments with the target Job Description. Maintain all core facts, numbers, dates, companies, and roles.",
+        userTemplate: "Resume Content:\n{{resume}}\n\nJob Description:\n{{jobDescription}}",
+        outputFormat: "JSON",
+        schema: z.object({
+          summary: z.string(),
+          workExperiences: z.array(
+            z.object({
+              company: z.string(),
+              descriptions: z.array(z.string()),
+            })
+          ),
+          projects: z.array(
+            z.object({
+              project: z.string(),
+              descriptions: z.array(z.string()),
+            })
+          ),
+        }),
+      },
+    },
   };
 
   static getPrompt(id: string, version = "v1"): PromptDefinition {

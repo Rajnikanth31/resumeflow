@@ -65,6 +65,16 @@ export class AIFeatureRegistry {
       streaming: false,
       permissions: ["user-role"],
     },
+    "resume-tailor": {
+      id: "resume-tailor",
+      promptId: "resume-tailor",
+      version: "v1",
+      provider: "lm-studio",
+      model: "local-model",
+      temperature: 0.3,
+      streaming: false,
+      permissions: ["user-role"],
+    },
   };
 
   static getFeature(id: string): AIFeatureConfig {

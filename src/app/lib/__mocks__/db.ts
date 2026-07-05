@@ -80,6 +80,9 @@ export const db = {
     update: jest.fn(),
     delete: jest.fn(),
   },
+  resumeJobLink: {
+    upsert: jest.fn(),
+  },
   $transaction: jest.fn(async (cb) => {
     return cb(db);
   }),
