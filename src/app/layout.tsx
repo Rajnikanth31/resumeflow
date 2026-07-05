@@ -3,6 +3,7 @@ import { Inter, Outfit, JetBrains_Mono } from "next/font/google";
 import { TopNavBar } from "components/TopNavBar";
 import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "components/ThemeProvider";
+import { AuthProvider } from "components/AuthProvider";
 
 const fontSans = Inter({
   subsets: ["latin"],
@@ -51,11 +52,13 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className={`${fontSans.variable} ${fontHeading.variable} ${fontMono.variable}`}>
-        <ThemeProvider>
-          <TopNavBar />
-          {children}
-          <Analytics />
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <TopNavBar />
+            {children}
+            <Analytics />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );
