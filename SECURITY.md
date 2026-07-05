@@ -10,9 +10,9 @@ We actively monitor and patch vulnerabilities in the following versions:
 
 | Version  | Supported | Notes                                            |
 | :------- | :-------- | :----------------------------------------------- |
-| `v1.1.x` | Yes       | Active main development branch.                  |
-| `v1.0.x` | Yes       | Legacy production stable branch.                 |
-| `< v1.0` | No        | Pre-release alpha/beta builds. Upgrade to v1.0+. |
+| `v0.8.x` | Yes       | Active main development branch (Career Platform).|
+| `v0.7.x` | Yes       | Previous release (Resume Intelligence).          |
+| `< v0.7` | No        | Legacy pre-release builds.                       |
 
 ---
 
