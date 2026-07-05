@@ -5,6 +5,8 @@ import { POST as createHandler, GET as listHandler } from "../route";
 import { GET as getHandler, PUT as putHandler, DELETE as deleteHandler } from "../[id]/route";
 import { POST as duplicateHandler } from "../[id]/duplicate/route";
 import { POST as restoreHandler } from "../[id]/restore/route";
+import { GET as getVersionsHandler, POST as createVersionHandler } from "../[id]/versions/route";
+import { POST as restoreVersionHandler } from "../[id]/versions/[versionId]/restore/route";
 import { db } from "lib/db";
 import { getServerSession } from "next-auth/next";
 
@@ -150,6 +152,59 @@ describe("Resume CRUD Endpoints", () => {
           data: { deletedAt: null },
         })
       );
+    });
+  });
+
+  describe("Resume Version History and Snapshots", () => {
+    it("should list versions on success", async () => {
+      (getServerSession as jest.Mock).mockResolvedValue({
+        user: { id: "user-uuid" },
+      });
+      (db.resume.findFirst as jest.Mock).mockResolvedValue({ id: "resume-uuid" });
+      (db.resumeVersion.findMany as jest.Mock).mockResolvedValue([
+        { id: "v1", versionName: "V1 Snapshot" },
+      ]);
+
+      const res = await getVersionsHandler(
+        new Request("http://localhost/api/resumes/resume-uuid/versions"),
+        { params: { id: "resume-uuid" } }
+      );
+
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.versions.length).toBe(1);
+    });
+
+    it("should create version snapshot on success", async () => {
+      (getServerSession as jest.Mock).mockResolvedValue({
+        user: { id: "user-uuid" },
+      });
+      (db.resume.findFirst as jest.Mock).mockResolvedValue({
+        id: "resume-uuid",
+        title: "Test",
+        workHistory: [],
+        education: [],
+        projects: [],
+        skills: [],
+        customs: [],
+      });
+      (db.resumeVersion.count as jest.Mock).mockResolvedValue(0);
+      (db.resumeVersion.create as jest.Mock).mockResolvedValue({
+        id: "v-new",
+        versionName: "New Snapshot",
+      });
+
+      const res = await createVersionHandler(
+        new Request("http://localhost/api/resumes/resume-uuid/versions", {
+          method: "POST",
+          body: JSON.stringify({ versionName: "New Snapshot" }),
+        }),
+        { params: { id: "resume-uuid" } }
+      );
+
+      expect(res.status).toBe(201);
+      const data = await res.json();
+      expect(data.version.id).toBe("v-new");
     });
   });
 });
