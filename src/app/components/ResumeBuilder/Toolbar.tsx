@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import {
   ArrowUturnLeftIcon,
@@ -9,9 +8,16 @@ import {
   MagnifyingGlassMinusIcon,
   PaintBrushIcon,
   ClockIcon,
+  SparklesIcon,
 } from "@heroicons/react/24/outline";
 
-export const Toolbar = () => {
+export const Toolbar = ({
+  onOpenTailor,
+  onOpenATS,
+}: {
+  onOpenTailor: () => void;
+  onOpenATS: () => void;
+}) => {
   return (
     <div className="flex h-12 w-full items-center justify-between border-b border-gray-200 bg-white/80 px-6 text-zinc-600 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80 dark:text-zinc-400">
       <div className="flex items-center gap-4">
@@ -78,6 +84,28 @@ export const Toolbar = () => {
       </div>
 
       <div className="flex items-center gap-3">
+        {/* ATS Audit */}
+        <button
+          type="button"
+          onClick={onOpenATS}
+          className="flex items-center gap-1.5 rounded px-3 py-1 text-sm hover:bg-gray-100 dark:hover:bg-zinc-800"
+          aria-label="Run ATS Scan"
+        >
+          <SparklesIcon className="h-4 w-4 text-primary animate-pulse" />
+          <span>ATS Scorer</span>
+        </button>
+
+        {/* AI Tailoring */}
+        <button
+          type="button"
+          onClick={onOpenTailor}
+          className="flex items-center gap-1.5 rounded px-3 py-1 text-sm hover:bg-gray-100 dark:hover:bg-zinc-800"
+          aria-label="Tailor Resume"
+        >
+          <SparklesIcon className="h-4 w-4 text-emerald-500" />
+          <span>Tailor</span>
+        </button>
+
         {/* Theme Settings */}
         <button
           type="button"
