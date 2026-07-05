@@ -68,6 +68,11 @@ export const db = {
   aIRequestLog: {
     create: jest.fn(),
   },
+  aISuggestionLog: {
+    create: jest.fn(),
+    findFirst: jest.fn(),
+    update: jest.fn(),
+  },
   $transaction: jest.fn(async (cb) => {
     return cb(db);
   }),
