@@ -1,4 +1,4 @@
-export const db = {
+export const db: any = {
   user: {
     findUnique: jest.fn(),
     findFirst: jest.fn(),

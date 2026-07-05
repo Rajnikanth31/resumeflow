@@ -5,6 +5,7 @@ import { POST as generatePOST } from "../generate/route";
 import { GET as listGET } from "../../resumes/[id]/cover-letters/route";
 import { POST as packagePOST } from "../../application-packages/create/route";
 import { GET as versionsGET, POST as versionsPOST } from "../[id]/versions/route";
+import { GET as exportGET } from "../../application-packages/[id]/export/route";
 import { db } from "lib/db";
 import { getServerSession } from "next-auth/next";
 import { AIRequestPipeline } from "lib/ai/pipeline";
@@ -86,6 +87,39 @@ describe("Cover Letter & Application Package APIs", () => {
       expect(res.status).toBe(200);
       expect(data.success).toBe(true);
       expect(data.package.id).toBe("package-1");
+    });
+  });
+
+  describe("GET /api/application-packages/[id]/export", () => {
+    it("returns compiled zip package successfully", async () => {
+      const mockPackage = {
+        id: "package-1",
+        resumeId: "resume-1",
+        createdAt: new Date(),
+        resume: {
+          id: "resume-1",
+          userId: "user-1",
+          profile: { name: "John Doe", email: "john@example.com" },
+          workHistory: [],
+          projects: [],
+          skills: [],
+          education: [],
+        },
+        job: { title: "Engineer", company: "Meta", description: "Build code" },
+        coverLetter: { title: "My Cover Letter", content: "Letter content" },
+        atsReport: { overallScore: 85, keywordScore: 80, semanticScore: 90, reasoning: "Good match", matchedKeywords: ["A"], missingKeywords: ["B"] },
+        additionalAssets: { linkedin: "https://linkedin.com" },
+      };
+
+      (db.applicationPackage.findFirst as jest.Mock).mockResolvedValue(mockPackage);
+
+      const req = new Request("http://localhost/api/application-packages/package-1/export", {
+        method: "GET",
+      });
+
+      const res = await exportGET(req, { params: { id: "package-1" } });
+      expect(res.status).toBe(200);
+      expect(res.headers.get("Content-Type")).toBe("application/zip");
     });
   });
 });

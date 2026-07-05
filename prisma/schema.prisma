@@ -441,6 +441,7 @@ model ATSReport {
 
   resume                Resume          @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   job                   JobDescription? @relation(fields: [jobDescriptionId], references: [id], onDelete: Cascade)
+  packages              ApplicationPackage[]
 }
 
 model UserNotification {
