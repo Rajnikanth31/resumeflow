@@ -52,7 +52,7 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user || !(session.user as any).id) {
@@ -60,17 +60,49 @@ export async function GET() {
     }
     const userId = (session.user as any).id;
 
-    const resumes = await db.resume.findMany({
-      where: {
-        userId,
-        deletedAt: null,
-      },
-      orderBy: {
-        updatedAt: "desc",
+    const { searchParams } = new URL(req.url);
+    const q = searchParams.get("q") || "";
+    const sortBy = searchParams.get("sortBy") === "title" ? "title" : "updatedAt";
+    const order = searchParams.get("order") === "asc" ? "asc" : "desc";
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
+    const limit = Math.max(1, parseInt(searchParams.get("limit") || "10"));
+    const skip = (page - 1) * limit;
+
+    const whereClause: any = {
+      userId,
+      deletedAt: null,
+    };
+
+    if (q) {
+      whereClause.title = {
+        contains: q,
+        mode: "insensitive",
+      };
+    }
+
+    const [resumes, totalCount] = await Promise.all([
+      db.resume.findMany({
+        where: whereClause,
+        orderBy: {
+          [sortBy]: order,
+        },
+        skip,
+        take: limit,
+      }),
+      db.resume.count({
+        where: whereClause,
+      }),
+    ]);
+
+    return NextResponse.json({
+      resumes,
+      pagination: {
+        page,
+        limit,
+        totalCount,
+        totalPages: Math.ceil(totalCount / limit),
       },
     });
-
-    return NextResponse.json({ resumes });
   } catch (error) {
     console.error("Resumes fetch error:", error);
     return NextResponse.json(

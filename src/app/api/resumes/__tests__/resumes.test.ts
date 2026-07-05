@@ -66,4 +66,34 @@ describe("Resume CRUD Endpoints", () => {
       expect(data.resume.title).toBe("Test Resume");
     });
   });
+
+  describe("GET /api/resumes search and filters", () => {
+    it("should list resumes with pagination details", async () => {
+      (getServerSession as jest.Mock).mockResolvedValue({
+        user: { id: "user-uuid" },
+      });
+      (db.resume.findMany as jest.Mock).mockResolvedValue([
+        { id: "r1", title: "Developer Resume" },
+      ]);
+      (db.resume.count as jest.Mock).mockResolvedValue(1);
+
+      const req = new Request("http://localhost/api/resumes?q=Developer&page=1&limit=5");
+      const res = await listHandler(req);
+
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.resumes.length).toBe(1);
+      expect(data.pagination.totalCount).toBe(1);
+      expect(data.pagination.totalPages).toBe(1);
+      expect(db.resume.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            title: expect.objectContaining({ contains: "Developer" }),
+          }),
+          skip: 0,
+          take: 5,
+        })
+      );
+    });
+  });
 });
