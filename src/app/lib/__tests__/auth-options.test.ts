@@ -70,4 +70,16 @@ describe("NextAuth Credentials authorize callback", () => {
       role: "USER",
     });
   });
+
+  describe("OAuth Providers configuration", () => {
+    it("should configure Google provider", () => {
+      const googleProvider = authOptions.providers.find((p) => p.id === "google");
+      expect(googleProvider).toBeDefined();
+    });
+
+    it("should configure GitHub provider", () => {
+      const githubProvider = authOptions.providers.find((p) => p.id === "github");
+      expect(githubProvider).toBeDefined();
+    });
+  });
 });
