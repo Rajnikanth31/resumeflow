@@ -28,6 +28,7 @@ export interface Settings {
     skills: boolean;
     custom: boolean;
   };
+  resumeId?: string | null;
 }
 
 export type ShowForm = keyof Settings["formToShow"];
@@ -43,6 +44,7 @@ export const DEFAULT_FONT_SIZE = "11"; // text-base https://tailwindcss.com/docs
 export const DEFAULT_FONT_COLOR = "#171717"; // text-neutral-800
 
 export const initialSettings: Settings = {
+  resumeId: null,
   template: "classic",
   themeColor: DEFAULT_THEME_COLOR,
   fontFamily: DEFAULT_FONT_FAMILY,
@@ -126,6 +128,9 @@ export const settingsSlice = createSlice({
     setSettings: (draft, action: PayloadAction<Settings>) => {
       return action.payload;
     },
+    setResumeId: (draft, action: PayloadAction<string | null>) => {
+      draft.resumeId = action.payload;
+    },
   },
 });
 
@@ -136,6 +141,7 @@ export const {
   changeFormOrder,
   changeShowBulletPoints,
   setSettings,
+  setResumeId,
 } = settingsSlice.actions;
 
 export const selectSettings = (state: RootState) => state.settings;

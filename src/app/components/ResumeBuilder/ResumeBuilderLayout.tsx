@@ -27,15 +27,30 @@ export const ResumeBuilderLayout = ({
   const isFirstMount = useRef(true);
 
   useEffect(() => {
-    if (isFirstMount.current) {
-      isFirstMount.current = false;
-      return;
+    const handleSaving = () => setSaveStatus("saving");
+    const handleSaved = () => setSaveStatus("saved");
+
+    if (settings.resumeId) {
+      window.addEventListener("resume-saving", handleSaving);
+      window.addEventListener("resume-saved", handleSaved);
+      window.addEventListener("resume-save-error", handleSaved);
+
+      return () => {
+        window.removeEventListener("resume-saving", handleSaving);
+        window.removeEventListener("resume-saved", handleSaved);
+        window.removeEventListener("resume-save-error", handleSaved);
+      };
+    } else {
+      if (isFirstMount.current) {
+        isFirstMount.current = false;
+        return;
+      }
+      setSaveStatus("saving");
+      const timer = setTimeout(() => {
+        setSaveStatus("saved");
+      }, 1000);
+      return () => clearTimeout(timer);
     }
-    setSaveStatus("saving");
-    const timer = setTimeout(() => {
-      setSaveStatus("saved");
-    }, 1000);
-    return () => clearTimeout(timer);
   }, [resume, settings]);
 
   return (
