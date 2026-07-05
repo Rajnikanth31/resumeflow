@@ -88,6 +88,23 @@ export const db = {
   resumeJobLink: {
     upsert: jest.fn(),
   },
+  coverLetter: {
+    create: jest.fn(),
+    findFirst: jest.fn(),
+    findMany: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  },
+  coverLetterVersion: {
+    create: jest.fn(),
+    findMany: jest.fn(),
+  },
+  applicationPackage: {
+    create: jest.fn(),
+    findFirst: jest.fn(),
+    findMany: jest.fn(),
+    update: jest.fn(),
+  },
   $transaction: jest.fn(async (cb) => {
     return cb(db);
   }),
