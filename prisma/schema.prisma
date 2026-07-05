@@ -421,16 +421,24 @@ model AIRequestLog {
 }
 
 model ATSReport {
-  id             String   @id @default(uuid())
-  resumeId       String
-  jobTitle       String
-  score          Int
-  issuesFound    Json     // Rules violations: Formatting, Contact structure
-  keywordMetrics Json     // TF-IDF target keyword counts
-  suggestions    Json     // Detailed bullet optimization tips
-  createdAt      DateTime @default(now())
+  id                    String          @id @default(uuid())
+  resumeId              String
+  jobDescriptionId      String?
+  overallScore          Int             @default(0)
+  keywordScore          Int             @default(0)
+  semanticScore          Int             @default(0)
+  experienceScore       Int             @default(0)
+  projectScore          Int             @default(0)
+  educationScore        Int             @default(0)
+  qualityScore          Int             @default(0)
+  reasoning             String          @db.Text
+  matchedKeywords       String[]
+  missingKeywords       String[]
+  improvementSuggestions Json            // List of { suggestion: string, category: string, estimatedScoreGain: number }
+  createdAt             DateTime        @default(now())
 
-  resume         Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  resume                Resume          @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  job                   JobDescription? @relation(fields: [jobDescriptionId], references: [id], onDelete: Cascade)
 }
 
 model UserNotification {
@@ -558,6 +566,7 @@ model JobDescription {
 
   user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   resumeLinks     ResumeJobLink[]
+  atsReports      ATSReport[]
 }
 
 model ResumeJobLink {
