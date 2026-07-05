@@ -68,9 +68,10 @@ export async function GET(req: Request) {
     const limit = Math.max(1, parseInt(searchParams.get("limit") || "10"));
     const skip = (page - 1) * limit;
 
+    const archived = searchParams.get("archived") === "true";
     const whereClause: any = {
       userId,
-      deletedAt: null,
+      deletedAt: archived ? { not: null } : null,
     };
 
     if (q) {

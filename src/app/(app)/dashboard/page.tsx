@@ -1,379 +1,366 @@
 "use client";
-import React from "react";
-
-interface MockResume {
-  id: string;
-  title: string;
-  template: string;
-  updatedAt: string;
-  atsScore: number;
-  isDraft: boolean;
-}
-
-const mockResumes: MockResume[] = [
-  {
-    id: "res-1",
-    title: "Software Engineer Core Resume",
-    template: "ATS Professional",
-    updatedAt: "2 hours ago",
-    atsScore: 88,
-    isDraft: false,
-  },
-  {
-    id: "res-2",
-    title: "Product Manager Variant",
-    template: "Executive Minimal",
-    updatedAt: "3 days ago",
-    atsScore: 74,
-    isDraft: true,
-  },
-];
-
-const trackerStats = [
-  {
-    label: "Applied",
-    count: 12,
-    borderColor: "border-blue-100 dark:border-blue-900/30",
-    textColor: "text-blue-600 dark:text-blue-400",
-  },
-  {
-    label: "Interviewing",
-    count: 4,
-    borderColor: "border-amber-100 dark:border-amber-900/30",
-    textColor: "text-amber-600 dark:text-amber-400",
-  },
-  {
-    label: "Offers",
-    count: 2,
-    borderColor: "border-emerald-100 dark:border-emerald-900/30",
-    textColor: "text-emerald-600 dark:text-emerald-400",
-  },
-  {
-    label: "Rejected",
-    count: 1,
-    borderColor: "border-rose-100 dark:border-rose-900/30",
-    textColor: "text-rose-600 dark:text-rose-400",
-  },
-];
-
-const atsHistory = [
-  { date: "May 10", score: 60 },
-  { date: "May 22", score: 68 },
-  { date: "Jun 05", score: 72 },
-  { date: "Jun 18", score: 81 },
-  { date: "Jul 04", score: 88 },
-];
-
-const atsMetrics = [
-  { name: "Keyword Match", score: 92, color: "bg-indigo-600 dark:bg-indigo-500" },
-  { name: "Format & Structure", score: 95, color: "bg-emerald-600 dark:bg-emerald-500" },
-  { name: "Quantifiable Impact", score: 78, color: "bg-amber-600 dark:bg-amber-500" },
-];
-
-const mockActivities = [
-  { id: "act-1", text: "Optimized Software Engineer Core Resume using AI", time: "2 hours ago" },
-  { id: "act-2", text: "Scanned Product Manager Variant against Amazon JD", time: "1 day ago" },
-  { id: "act-3", text: "Applied to Senior Engineer position at Stripe", time: "2 days ago" },
-];
-
-const mockNotifications = [
-  { id: "not-1", text: "AI Suggestion: Add 'GraphQL API design' key phrase to maximize match score", type: "suggestion" },
-  { id: "not-2", text: "ResumeFlow v1.1 update: NestJS API routing upgrades are live", type: "update" },
-];
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import {
+  PlusIcon,
+  TrashIcon,
+  DocumentDuplicateIcon,
+  ArrowPathIcon,
+  MagnifyingGlassIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  FunnelIcon,
+  PencilIcon,
+  ArchiveBoxIcon,
+  ArrowUturnLeftIcon,
+} from "@heroicons/react/24/outline";
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const [resumes, setResumes] = useState<any[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(6);
+  const [q, setQ] = useState("");
+  const [sortBy, setSortBy] = useState("updatedAt");
+  const [order, setOrder] = useState("desc");
+  const [showArchived, setShowArchived] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  const fetchResumes = React.useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `/api/resumes?q=${q}&sortBy=${sortBy}&order=${order}&page=${page}&limit=${limit}&archived=${showArchived}`
+      );
+      if (!res.ok) throw new Error("Failed to fetch resumes");
+      const data = await res.json();
+      setResumes(data.resumes || []);
+      setTotalCount(data.pagination?.totalCount || 0);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [q, sortBy, order, page, limit, showArchived]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPage(1);
+      fetchResumes();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [q, fetchResumes]);
+
+  useEffect(() => {
+    fetchResumes();
+  }, [page, sortBy, order, showArchived, fetchResumes]);
+
+  async function handleCreate() {
+    setActionLoading("create");
+    try {
+      const res = await fetch("/api/resumes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: "My Resume" }),
+      });
+      if (!res.ok) throw new Error("Failed to create resume");
+      const data = await res.json();
+      router.push(`/resume-builder?id=${data.resume.id}`);
+    } catch (err) {
+      console.error(err);
+      setActionLoading(null);
+    }
+  }
+
+  async function handleDuplicate(id: string, e: React.MouseEvent) {
+    e.stopPropagation();
+    setActionLoading(`dup-${id}`);
+    try {
+      const res = await fetch(`/api/resumes/${id}/duplicate`, {
+        method: "POST",
+      });
+      if (!res.ok) throw new Error("Failed to duplicate");
+      await fetchResumes();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setActionLoading(null);
+    }
+  }
+
+  async function handleDelete(id: string, e: React.MouseEvent) {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to delete this resume? It will be moved to the archive.")) return;
+    setActionLoading(`del-${id}`);
+    try {
+      const res = await fetch(`/api/resumes/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete");
+      await fetchResumes();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setActionLoading(null);
+    }
+  }
+
+  async function handleRestore(id: string, e: React.MouseEvent) {
+    e.stopPropagation();
+    setActionLoading(`res-${id}`);
+    try {
+      const res = await fetch(`/api/resumes/${id}/restore`, {
+        method: "POST",
+      });
+      if (!res.ok) throw new Error("Failed to restore");
+      await fetchResumes();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setActionLoading(null);
+    }
+  }
+
+  const totalPages = Math.ceil(totalCount / limit);
+
   return (
     <div className="space-y-8">
-      {/* Dashboard Welcome Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="font-heading font-bold text-3xl tracking-tight text-foreground">
-            Dashboard
+            My Resumes
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Welcome to your ResumeFlow Career Dashboard.
+            Manage, duplicate, search, and refine your resumes dynamically.
           </p>
         </div>
+        <div>
+          <button
+            onClick={handleCreate}
+            disabled={actionLoading === "create"}
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/95 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50"
+          >
+            {actionLoading === "create" ? (
+              <ArrowPathIcon className="h-4 w-4 animate-spin" />
+            ) : (
+              <PlusIcon className="h-4 w-4" />
+            )}
+            Create New Resume
+          </button>
+        </div>
       </div>
 
-      {/* Main Content Layout Grid */}
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* Left Side: Primary Content Panel (2 columns) */}
-        <div className="lg:col-span-2 space-y-8">
-          {/* Application Tracker Pipeline Section */}
-          <section className="space-y-4">
-            <h2 className="font-heading font-semibold text-xl tracking-tight text-foreground">
-              Application Tracker
-            </h2>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {trackerStats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className={`flex flex-col rounded-lg border bg-card p-5 transition-all hover:shadow-md ${stat.borderColor}`}
-                >
-                  <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                    {stat.label}
+      <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch">
+        <div className="relative flex-1">
+          <MagnifyingGlassIcon className="absolute left-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search by title..."
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            className="w-full rounded-lg border border-border bg-card pl-9 pr-4 py-2.5 text-sm text-foreground shadow-sm placeholder:text-gray-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 bg-card rounded-lg border border-border px-3 py-1.5 shadow-sm">
+            <FunnelIcon className="h-4 w-4 text-gray-400" />
+            <select
+              value={`${sortBy}-${order}`}
+              onChange={(e) => {
+                const [field, dir] = e.target.value.split("-");
+                setSortBy(field);
+                setOrder(dir);
+              }}
+              className="bg-transparent border-none text-sm text-foreground focus:outline-none focus:ring-0 cursor-pointer pr-8"
+            >
+              <option value="updatedAt-desc">Last Updated (Newest)</option>
+              <option value="updatedAt-asc">Last Updated (Oldest)</option>
+              <option value="title-asc">Title (A-Z)</option>
+              <option value="title-desc">Title (Z-A)</option>
+            </select>
+          </div>
+
+          <button
+            onClick={() => setShowArchived(!showArchived)}
+            className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold shadow-sm transition-all focus:outline-none focus:ring-1 focus:ring-primary ${
+              showArchived
+                ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/50"
+                : "bg-card border-border text-foreground hover:bg-gray-50 dark:hover:bg-zinc-800"
+            }`}
+          >
+            <ArchiveBoxIcon className="h-4 w-4" />
+            {showArchived ? "Viewing Archive" : "View Archive"}
+          </button>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="animate-pulse rounded-lg border border-border bg-card p-5 h-44 flex flex-col justify-between"
+            >
+              <div className="space-y-3">
+                <div className="h-4 w-1/4 rounded bg-gray-200 dark:bg-zinc-800" />
+                <div className="h-6 w-3/4 rounded bg-gray-200 dark:bg-zinc-800" />
+              </div>
+              <div className="h-8 w-full rounded bg-gray-200 dark:bg-zinc-800" />
+            </div>
+          ))}
+        </div>
+      ) : resumes.length === 0 ? (
+        <div className="text-center py-16 bg-card rounded-lg border border-border">
+          <ArchiveBoxIcon className="mx-auto h-12 w-12 text-gray-400" />
+          <h3 className="mt-4 font-semibold text-foreground">
+            {showArchived ? "No archived resumes" : "No resumes found"}
+          </h3>
+          <p className="mt-2 text-sm text-gray-500">
+            {showArchived
+              ? "Your deleted resumes will appear here to be restored."
+              : "Get started by creating a new resume."}
+          </p>
+          {!showArchived && (
+            <button
+              onClick={handleCreate}
+              className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/95 transition-all"
+            >
+              <PlusIcon className="h-4 w-4" />
+              Create your first resume
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {resumes.map((resume) => (
+            <div
+              key={resume.id}
+              onClick={() => {
+                if (!showArchived) router.push(`/resume-builder?id=${resume.id}`);
+              }}
+              className={`group flex flex-col justify-between rounded-lg border border-border bg-card p-5 shadow-sm transition-all ${
+                showArchived
+                  ? "border-amber-200/50 dark:border-amber-900/30"
+                  : "hover:shadow-md hover:border-primary/50 cursor-pointer"
+              }`}
+            >
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold border ${
+                      showArchived
+                        ? "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/50"
+                        : "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/50"
+                    }`}
+                  >
+                    {showArchived ? "Archived" : "Active"}
                   </span>
-                  <span className={`mt-2 font-heading text-3xl font-extrabold ${stat.textColor}`}>
-                    {stat.count}
+                  <span className="text-[10px] text-gray-400">
+                    {new Date(resume.updatedAt).toLocaleDateString()}
                   </span>
                 </div>
-              ))}
-            </div>
-          </section>
 
-          {/* ATS Diagnostics & Analytics Section */}
-          <section className="space-y-4">
-            <h2 className="font-heading font-semibold text-xl tracking-tight text-foreground">
-              ATS Diagnostics & Analytics
-            </h2>
-            <div className="grid gap-6 md:grid-cols-3">
-              {/* Chart Panel */}
-              <div className="rounded-lg border border-border bg-card p-5 md:col-span-2 space-y-4">
-                <h3 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                  Score Scan History
-                </h3>
-                <div className="h-44 w-full flex items-end justify-between pt-4">
-                  {atsHistory.map((scan) => (
-                    <div key={scan.date} className="flex flex-col items-center gap-2 flex-1">
-                      <div className="relative flex flex-col justify-end w-full h-32 items-center">
-                        <span className="absolute -top-6 text-xs font-bold text-primary">
-                          {scan.score}%
-                        </span>
-                        <div 
-                          style={{ height: `${scan.score}%` }}
-                          className="w-10 rounded-t bg-gradient-to-t from-primary/30 to-primary transition-all duration-500 hover:opacity-80"
-                        />
-                      </div>
-                      <span className="text-[10px] font-medium text-gray-400">
-                        {scan.date}
-                      </span>
-                    </div>
-                  ))}
+                <div>
+                  <h3 className="font-heading font-semibold text-lg text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                    {resume.title}
+                  </h3>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Template: {resume.fontFamily || "Classic"}
+                  </p>
                 </div>
               </div>
 
-              {/* Metric Breakdown Panel */}
-              <div className="rounded-lg border border-border bg-card p-5 space-y-5">
-                <h3 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                  Diagnostic Breakdown
-                </h3>
-                <div className="space-y-4">
-                  {atsMetrics.map((metric) => (
-                    <div key={metric.name} className="space-y-1.5">
-                      <div className="flex justify-between text-xs">
-                        <span className="font-medium text-gray-500 dark:text-gray-400">{metric.name}</span>
-                        <span className="font-semibold text-foreground">{metric.score}%</span>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-gray-100 dark:bg-zinc-800">
-                        <div 
-                          className={`h-full rounded-full ${metric.color}`}
-                          style={{ width: `${metric.score}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
+              <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+                <span className="text-xs text-gray-400">
+                  {showArchived ? "Soft deleted" : "Autosaved"}
+                </span>
 
-          {/* Resumes Grid Section */}
-          <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-heading font-semibold text-xl tracking-tight text-foreground">
-                My Resumes
-              </h2>
-            </div>
-
-            <div className="grid gap-6 sm:grid-cols-2">
-              {mockResumes.map((resume) => (
-                <div
-                  key={resume.id}
-                  className="group relative flex flex-col justify-between rounded-lg border border-border bg-card p-5 shadow-sm transition-all hover:shadow-md hover:border-primary/50"
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                        resume.isDraft 
-                          ? "bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/50"
-                          : "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/50"
-                      }`}>
-                        {resume.isDraft ? "Draft" : "Active"}
-                      </span>
-                      
-                      {resume.atsScore && (
-                        <div className="flex items-center gap-1.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          {resume.atsScore}% Match
-                        </div>
+                <div className="flex items-center gap-2">
+                  {showArchived ? (
+                    <button
+                      onClick={(e) => handleRestore(resume.id, e)}
+                      disabled={actionLoading === `res-${resume.id}`}
+                      className="rounded p-1 hover:bg-gray-100 dark:hover:bg-zinc-800 text-primary focus-visible:outline-none"
+                      title="Restore Resume"
+                    >
+                      {actionLoading === `res-${resume.id}` ? (
+                        <ArrowPathIcon className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <ArrowUturnLeftIcon className="h-4 w-4" />
                       )}
-                    </div>
-
-                    <div>
-                      <h3 className="font-heading font-semibold text-lg text-foreground group-hover:text-primary transition-colors">
-                        {resume.title}
-                      </h3>
-                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                        Template: {resume.template}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 flex items-center justify-between border-t border-border pt-4 text-xs text-gray-400">
-                    <span>Updated {resume.updatedAt}</span>
-                    
-                    <div className="flex items-center gap-2">
-                      <button className="rounded p-1 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" aria-label="Edit Resume">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                        </svg>
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => router.push(`/resume-builder?id=${resume.id}`)}
+                        className="rounded p-1 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400"
+                        title="Edit Resume"
+                      >
+                        <PencilIcon className="h-4 w-4" />
                       </button>
-                      <button className="rounded p-1 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" aria-label="Duplicate Resume">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                        </svg>
+                      <button
+                        onClick={(e) => handleDuplicate(resume.id, e)}
+                        disabled={actionLoading === `dup-${resume.id}`}
+                        className="rounded p-1 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400"
+                        title="Duplicate Resume"
+                      >
+                        {actionLoading === `dup-${resume.id}` ? (
+                          <ArrowPathIcon className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <DocumentDuplicateIcon className="h-4 w-4" />
+                        )}
                       </button>
-                      <button className="rounded p-1 hover:bg-gray-100 dark:hover:bg-zinc-800 text-red-500 dark:text-red-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" aria-label="Delete Resume">
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
+                      <button
+                        onClick={(e) => handleDelete(resume.id, e)}
+                        disabled={actionLoading === `del-${resume.id}`}
+                        className="rounded p-1 hover:bg-gray-100 dark:hover:bg-zinc-800 text-red-500 dark:text-red-400"
+                        title="Delete Resume"
+                      >
+                        {actionLoading === `del-${resume.id}` ? (
+                          <ArrowPathIcon className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <TrashIcon className="h-4 w-4" />
+                        )}
                       </button>
-                    </div>
-                  </div>
+                    </>
+                  )}
                 </div>
-              ))}
+              </div>
             </div>
-          </section>
+          ))}
         </div>
+      )}
 
-        {/* Right Side: Quick Action Sidebar Controls (1 column) */}
-        <div className="space-y-8">
-          {/* Subscription Status Card */}
-          <div className="rounded-lg border border-border bg-card p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-heading font-semibold text-lg text-foreground">
-                Subscription
-              </h3>
-              <span className="inline-flex items-center rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-semibold text-primary">
-                PRO Member
-              </span>
-            </div>
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-gray-400">Resumes Limit</span>
-                  <span className="font-semibold text-foreground">2 of 10</span>
-                </div>
-                <div className="h-1.5 w-full rounded-full bg-gray-100 dark:bg-zinc-800">
-                  <div className="h-full rounded-full bg-primary" style={{ width: "20%" }} />
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs">
-                  <span className="text-gray-400">AI Tokens Scans</span>
-                  <span className="font-semibold text-foreground">85% remaining</span>
-                </div>
-                <div className="h-1.5 w-full rounded-full bg-gray-100 dark:bg-zinc-800">
-                  <div className="h-full rounded-full bg-emerald-500" style={{ width: "85%" }} />
-                </div>
-              </div>
-            </div>
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between border-t border-border pt-6 text-sm text-gray-500">
+          <div>
+            Showing <span className="font-semibold text-foreground">{resumes.length}</span> of{" "}
+            <span className="font-semibold text-foreground">{totalCount}</span> resumes
           </div>
-
-          {/* Quick Actions Panel */}
-          <div className="rounded-lg border border-border bg-card p-5 space-y-4">
-            <h3 className="font-heading font-semibold text-lg text-foreground">
-              Quick Actions
-            </h3>
-            <div className="grid gap-3">
-              <button className="flex w-full items-center gap-3 rounded-lg border border-border bg-card px-4 py-2.5 text-left text-sm font-semibold text-foreground hover:bg-gray-50 dark:hover:bg-zinc-800/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
-                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Create New Resume
-              </button>
-              <button className="flex w-full items-center gap-3 rounded-lg border border-border bg-card px-4 py-2.5 text-left text-sm font-semibold text-foreground hover:bg-gray-50 dark:hover:bg-zinc-800/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
-                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                </svg>
-                Upload & Parse PDF
-              </button>
-              <button className="flex w-full items-center gap-3 rounded-lg border border-border bg-card px-4 py-2.5 text-left text-sm font-semibold text-foreground hover:bg-gray-50 dark:hover:bg-zinc-800/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
-                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-                ATS Match Scanner
-              </button>
-            </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage(Math.max(1, page - 1))}
+              disabled={page === 1}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50"
+            >
+              <ChevronLeftIcon className="h-4 w-4" />
+            </button>
+            <span className="text-gray-400">
+              Page {page} of {totalPages}
+            </span>
+            <button
+              onClick={() => setPage(Math.min(totalPages, page + 1))}
+              disabled={page === totalPages}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50"
+            >
+              <ChevronRightIcon className="h-4 w-4" />
+            </button>
           </div>
         </div>
-      </div>
-
-      {/* Splits: Recent Activity & Notifications */}
-      <div className="grid gap-6 md:grid-cols-2 border-t border-border pt-8">
-        {/* Recent Activity */}
-        <section className="rounded-lg border border-border bg-card p-5 space-y-4">
-          <h2 className="font-heading font-semibold text-lg tracking-tight text-foreground">
-            Recent Activity
-          </h2>
-          <div className="flow-root">
-            <ul className="-mb-8">
-              {mockActivities.map((activity, i) => (
-                <li key={activity.id}>
-                  <div className="relative pb-8">
-                    {i !== mockActivities.length - 1 ? (
-                      <span className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-zinc-800" aria-hidden="true" />
-                    ) : null}
-                    <div className="relative flex space-x-3">
-                      <div>
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
-                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </span>
-                      </div>
-                      <div className="flex-1 min-w-0 pt-1.5 flex justify-between space-x-4">
-                        <div>
-                          <p className="text-sm text-foreground">{activity.text}</p>
-                        </div>
-                        <div className="text-right text-xs whitespace-nowrap text-gray-400">
-                          <time>{activity.time}</time>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* Notifications */}
-        <section className="rounded-lg border border-border bg-card p-5 space-y-4">
-          <h2 className="font-heading font-semibold text-lg tracking-tight text-foreground">
-            Notifications
-          </h2>
-          <div className="space-y-4">
-            {mockNotifications.map((notif) => (
-              <div 
-                key={notif.id}
-                className={`flex gap-3 rounded-lg border p-4 bg-card ${
-                  notif.type === "suggestion"
-                    ? "border-primary/20 bg-primary/5 text-primary"
-                    : "border-border text-foreground"
-                }`}
-              >
-                <div className="flex-1">
-                  <p className="text-sm font-medium">{notif.text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
+      )}
     </div>
   );
 }
