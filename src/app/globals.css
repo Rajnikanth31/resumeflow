@@ -40,6 +40,8 @@
 
   --theme-purple: #6366f1; /* Indigo-500 */
   --theme-blue: #10b981; /* Emerald-500 */
+  --theme-gold: #d4a458; /* Amber gold */
+  --theme-gold-secondary: #b8823d;
 
   /* Keep the below variable names in sync with CSS_VARIABLES in globals-css.ts */
   --top-nav-bar-height: 3.5rem;
