@@ -55,6 +55,16 @@ export class AIFeatureRegistry {
       streaming: false,
       permissions: ["user-role"],
     },
+    "job-parser": {
+      id: "job-parser",
+      promptId: "job-parser",
+      version: "v1",
+      provider: "lm-studio",
+      model: "local-model",
+      temperature: 0.1,
+      streaming: false,
+      permissions: ["user-role"],
+    },
   };
 
   static getFeature(id: string): AIFeatureConfig {

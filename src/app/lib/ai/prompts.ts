@@ -75,6 +75,31 @@ export class AIPromptRegistry {
         }),
       },
     },
+    "job-parser": {
+      "v1": {
+        id: "job-parser",
+        version: "v1",
+        systemTemplate: "You are an expert technical recruiter. Analyze this Job Description text and extract structured company metadata, requirements, and hiring focus profiles.",
+        userTemplate: "Job Description:\n{{description}}",
+        outputFormat: "JSON",
+        schema: z.object({
+          title: z.string(),
+          company: z.string(),
+          industry: z.string().optional(),
+          remoteType: z.enum(["remote", "hybrid", "onsite"]).default("onsite"),
+          salaryMin: z.number().optional(),
+          salaryMax: z.number().optional(),
+          seniority: z.string().optional(),
+          techStack: z.array(z.string()),
+          hiringFocus: z.string().optional(),
+          responsibilities: z.array(z.string()),
+          requiredSkills: z.array(z.string()),
+          preferredSkills: z.array(z.string()),
+          experienceYearsRequired: z.number().default(0),
+          educationRequired: z.string().optional(),
+        }),
+      },
+    },
   };
 
   static getPrompt(id: string, version = "v1"): PromptDefinition {

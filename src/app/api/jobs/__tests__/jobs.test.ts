@@ -3,11 +3,14 @@
  */
 import { POST as createJob, GET as listJobs } from "../route";
 import { GET as getJob, PUT as updateJob, DELETE as deleteJob } from "../[id]/route";
+import { POST as importJob } from "../import/route";
 import { getServerSession } from "next-auth/next";
+import { AIRequestPipeline } from "lib/ai/pipeline";
 import { db } from "lib/db";
 
 jest.mock("next-auth/next");
 jest.mock("lib/db");
+jest.mock("lib/ai/pipeline");
 
 describe("Job CRUD APIs", () => {
   beforeEach(() => {
@@ -76,5 +79,40 @@ describe("Job CRUD APIs", () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.title).toBe("Senior Software Engineer");
+  });
+
+  it("should parse job description via AIRequestPipeline", async () => {
+    (getServerSession as jest.Mock).mockResolvedValue({
+      user: { id: "user-1" },
+    });
+    (AIRequestPipeline.execute as jest.Mock).mockResolvedValue({
+      content: {
+        title: "Staff Engineer",
+        company: "Vercel",
+        requiredSkills: ["Next.js"],
+        techStack: ["React"],
+        preferredSkills: ["Tailwind"],
+      },
+    });
+    (db.resume.findFirst as jest.Mock).mockResolvedValue(null);
+    (db.jobDescription.create as jest.Mock).mockResolvedValue({
+      id: "job-2",
+      title: "Staff Engineer",
+      company: "Vercel",
+      matchScore: 0,
+    });
+
+    const req = new Request("http://localhost/api/jobs/import", {
+      method: "POST",
+      body: JSON.stringify({
+        description: "Staff Engineer role at Vercel.",
+      }),
+    });
+
+    const res = await importJob(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data.title).toBe("Staff Engineer");
+    expect(data.matchScore).toBe(0);
   });
 });
