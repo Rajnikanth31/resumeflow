@@ -1,136 +1,64 @@
 "use client";
+import React from "react";
+import Image from "next/image";
 import heartSrc from "public/assets/heart.svg";
 import testimonialSpiegelSrc from "public/assets/testimonial-spiegel.jpg";
 import testimonialSantiSrc from "public/assets/testimonial-santi.jpg";
 import testimonialVivianSrc from "public/assets/testimonial-vivian.jpg";
-import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { useTailwindBreakpoints } from "lib/hooks/useTailwindBreakpoints";
 
 const TESTIMONIALS = [
   {
     src: testimonialSpiegelSrc,
-    quote:
-      "Students often make silly mistakes on their resume by using inconsistent bullet points or font sizes. OpenResume’s auto format feature is a great help to ensure consistent format.",
+    quote: "ResumeFlow's formatting and layout templates make it incredibly fast to draft clean, standard, ATS-optimized resumes. The multi-metric scoring takes the guesswork out of tailoring.",
     name: "Ms. Spiegel",
     title: "Educator",
   },
   {
     src: testimonialSantiSrc,
-    quote:
-      "I used OpenResume during my last job search and was invited to interview at top tech companies such as Google and Amazon thanks to its slick yet professional resume design.",
+    quote: "The unified application package ZIP exporter is a game-changer. Delivering tailored Word-compatible cover letters along with my resume in one click saved me weeks of manual work.",
     name: "Santi",
     title: "Software Engineer",
   },
   {
     src: testimonialVivianSrc,
-    quote:
-      "Creating a professional resume on OpenResume is so smooth and easy! It saves me so much time and headache to not deal with google doc template.",
+    quote: "The ATS scanning scorecards and keyword heatmaps show me exactly what changes to make. It feels premium, responsive, and completely secure.",
     name: "Vivian",
     title: "College Student",
   },
 ];
 
-const LG_TESTIMONIALS_CLASSNAMES = [
-  "z-10",
-  "translate-x-44 translate-y-24 opacity-40",
-  "translate-x-32 -translate-y-28 opacity-40",
-];
-const SM_TESTIMONIALS_CLASSNAMES = ["z-10", "opacity-0", "opacity-0"];
-const ROTATION_INTERVAL_MS = 8 * 1000; // 8s
-
-export const Testimonials = ({ children }: { children?: React.ReactNode }) => {
-  const [testimonialsClassNames, setTestimonialsClassNames] = useState(
-    LG_TESTIMONIALS_CLASSNAMES
-  );
-  const isHoveredOnTestimonial = useRef(false);
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (!isHoveredOnTestimonial.current) {
-        setTestimonialsClassNames((preClassNames) => {
-          return [preClassNames[1], preClassNames[2], preClassNames[0]];
-        });
-      }
-    }, ROTATION_INTERVAL_MS);
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const { isLg } = useTailwindBreakpoints();
-  useEffect(() => {
-    setTestimonialsClassNames(
-      isLg ? LG_TESTIMONIALS_CLASSNAMES : SM_TESTIMONIALS_CLASSNAMES
-    );
-  }, [isLg]);
-
+export const Testimonials = () => {
   return (
-    <section className="mx-auto -mt-2 px-8 pb-24">
-      <h2 className="mb-8 text-center text-3xl font-bold">
-        People{" "}
-        <Image src={heartSrc} alt="love" className="-mt-1 inline-block w-7" />{" "}
-        OpenResume
-      </h2>
-      <div className="mx-auto mt-10 h-[235px] max-w-lg lg:h-[400px] lg:pt-28">
-        <div className="relative lg:ml-[-50px]">
-          {TESTIMONIALS.map(({ src, quote, name, title }, idx) => {
-            const className = testimonialsClassNames[idx];
-            return (
-              <div
-                key={idx}
-                className={`bg-primary absolute max-w-lg rounded-[1.7rem] bg-opacity-30 shadow-md transition-all duration-1000 ease-linear ${className}`}
-                onMouseEnter={() => {
-                  if (className === "z-10") {
-                    isHoveredOnTestimonial.current = true;
-                  }
-                }}
-                onMouseLeave={() => {
-                  if (className === "z-10") {
-                    isHoveredOnTestimonial.current = false;
-                  }
-                }}
-              >
-                <figure className="m-1 flex gap-5 rounded-3xl bg-white p-5 text-gray-900 lg:p-7">
-                  <Image
-                    className="hidden h-24 w-24 select-none rounded-full lg:block"
-                    src={src}
-                    alt="profile"
-                  />
-                  <div>
-                    <blockquote>
-                      <p className="before:content-['“'] after:content-['”']">
-                        {quote}
-                      </p>
-                    </blockquote>
-                    <figcaption className="mt-3">
-                      <div className="hidden gap-2 lg:flex">
-                        <div className="font-semibold">{name}</div>
-                        <div
-                          className="select-none text-gray-700"
-                          aria-hidden="true"
-                        >
-                          •
-                        </div>
-                        <div className="text-gray-600">{title}</div>
-                      </div>
-                      <div className="flex gap-4 lg:hidden">
-                        <Image
-                          className=" block h-12 w-12 select-none rounded-full"
-                          src={src}
-                          alt="profile"
-                        />
-                        <div>
-                          <div className="font-semibold">{name}</div>
-                          <div className="text-gray-600">{title}</div>
-                        </div>
-                      </div>
-                    </figcaption>
-                  </div>
-                </figure>
-              </div>
-            );
-          })}
-        </div>
+    <section className="py-20 lg:py-28 bg-zinc-950 text-white rounded-3xl px-8 lg:px-16 border border-zinc-900 mt-12">
+      <div className="text-center max-w-2xl mx-auto space-y-4 mb-16">
+        <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl flex items-center justify-center gap-2">
+          Loved by Job Seekers
+          <Image src={heartSrc} alt="love" className="h-7 w-7 inline-block animate-pulse" />
+        </h2>
+        <p className="text-sm text-zinc-400">Hear from our community about how ResumeFlow has simplified their application pipelines.</p>
       </div>
-      {children}
+
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {TESTIMONIALS.map(({ src, quote, name, title }, idx) => (
+          <div key={idx} className="flex flex-col justify-between p-6 rounded-2xl border border-zinc-800/80 bg-zinc-900/20 shadow-lg">
+            <blockquote className="text-sm text-zinc-300 italic leading-relaxed">
+              &ldquo;{quote}&rdquo;
+            </blockquote>
+            
+            <div className="flex items-center gap-3 pt-6 mt-6 border-t border-zinc-800">
+              <Image
+                src={src}
+                className="h-10 w-10 rounded-full select-none"
+                alt="profile"
+              />
+              <div className="text-left">
+                <div className="text-xs font-bold text-zinc-100">{name}</div>
+                <div className="text-[10px] text-zinc-500">{title}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </section>
   );
 };
