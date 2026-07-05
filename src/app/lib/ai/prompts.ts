@@ -124,6 +124,42 @@ export class AIPromptRegistry {
         }),
       },
     },
+    "ats-scanner": {
+      "v1": {
+        id: "ats-scanner",
+        version: "v1",
+        systemTemplate: "You are an advanced ATS (Applicant Tracking System) scan analyzer. Evaluate the provided resume text against the target Job Description. Compute independent score categories (0-100) and compile explainable feedback suggestions with estimated score gains.",
+        userTemplate: "Resume Content:\n{{resume}}\n\nJob Description:\n{{jobDescription}}",
+        outputFormat: "JSON",
+        schema: z.object({
+          overallScore: z.number().min(0).max(100),
+          keywordScore: z.number().min(0).max(100),
+          semanticScore: z.number().min(0).max(100),
+          experienceScore: z.number().min(0).max(100),
+          projectScore: z.number().min(0).max(100),
+          educationScore: z.number().min(0).max(100),
+          qualityScore: z.number().min(0).max(100),
+          reasoning: z.string(),
+          matchedKeywords: z.array(z.string()),
+          missingKeywords: z.array(z.string()),
+          improvementSuggestions: z.array(
+            z.object({
+              suggestion: z.string(),
+              category: z.enum([
+                "Grammar",
+                "ATS",
+                "Keywords",
+                "Action Verbs",
+                "Quantification",
+                "Readability",
+                "Recruiter Recommendations",
+              ]),
+              estimatedScoreGain: z.number(),
+            })
+          ),
+        }),
+      },
+    },
   };
 
   static getPrompt(id: string, version = "v1"): PromptDefinition {

@@ -75,6 +75,16 @@ export class AIFeatureRegistry {
       streaming: false,
       permissions: ["user-role"],
     },
+    "ats-scanner": {
+      id: "ats-scanner",
+      promptId: "ats-scanner",
+      version: "v1",
+      provider: "lm-studio",
+      model: "local-model",
+      temperature: 0.1,
+      streaming: false,
+      permissions: ["user-role"],
+    },
   };
 
   static getFeature(id: string): AIFeatureConfig {
