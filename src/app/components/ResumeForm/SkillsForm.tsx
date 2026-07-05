@@ -1,24 +1,16 @@
 import { Form } from "components/ResumeForm/Form";
-import {
-  BulletListTextarea,
-  InputGroupWrapper,
-} from "components/ResumeForm/Form/InputGroup";
+import { InputGroupWrapper } from "components/ResumeForm/Form/InputGroup";
 import { FeaturedSkillInput } from "components/ResumeForm/Form/FeaturedSkillInput";
-import { BulletListIconButton } from "components/ResumeForm/Form/IconButton";
 import { useAppDispatch, useAppSelector } from "lib/redux/hooks";
 import { selectSkills, changeSkills } from "lib/redux/resumeSlice";
-import {
-  selectShowBulletPoints,
-  changeShowBulletPoints,
-  selectThemeColor,
-} from "lib/redux/settingsSlice";
+import { selectThemeColor } from "lib/redux/settingsSlice";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 
 export const SkillsForm = () => {
   const skills = useAppSelector(selectSkills);
   const dispatch = useAppDispatch();
   const { featuredSkills, descriptions } = skills;
   const form = "skills";
-  const showBulletPoints = useAppSelector(selectShowBulletPoints(form));
   const themeColor = useAppSelector(selectThemeColor) || "#38bdf8";
 
   const handleSkillsChange = (field: "descriptions", value: string[]) => {
@@ -31,29 +23,59 @@ export const SkillsForm = () => {
   ) => {
     dispatch(changeSkills({ field: "featuredSkills", idx, skill, rating }));
   };
-  const handleShowBulletPoints = (value: boolean) => {
-    dispatch(changeShowBulletPoints({ field: form, value }));
-  };
 
   return (
     <Form form={form}>
       <div className="col-span-full grid grid-cols-6 gap-3">
-        <div className="relative col-span-full">
-          <BulletListTextarea
-            label="Skills List"
-            labelClassName="col-span-full"
-            name="descriptions"
-            placeholder="Bullet points"
-            value={descriptions}
-            onChange={handleSkillsChange}
-            showBulletPoints={showBulletPoints}
-          />
-          <div className="absolute left-[4.5rem] top-[0.07rem]">
-            <BulletListIconButton
-              showBulletPoints={showBulletPoints}
-              onClick={handleShowBulletPoints}
-            />
-          </div>
+        <div className="col-span-full">
+          <InputGroupWrapper label="Skills List" className="col-span-full">
+            <div className="mt-2 flex flex-wrap gap-2 rounded-md border border-gray-300 bg-white p-2 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2">
+              {descriptions.map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200"
+                >
+                  <span>{tag}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newTags = descriptions.filter((_, i) => i !== idx);
+                      handleSkillsChange("descriptions", newTags);
+                    }}
+                    className="rounded-full p-0.5 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    aria-label={`Delete ${tag}`}
+                  >
+                    <XMarkIcon className="h-3 w-3" />
+                  </button>
+                </span>
+              ))}
+              <input
+                type="text"
+                placeholder="Add skill (separate with commas)..."
+                className="min-w-[150px] flex-1 border-none bg-transparent py-1 text-base text-gray-900 placeholder-gray-400 outline-none"
+                onKeyDown={(e) => {
+                  if (e.key === "," || e.key === "Enter") {
+                    e.preventDefault();
+                    const val = e.currentTarget.value.trim();
+                    if (val && !descriptions.includes(val)) {
+                      handleSkillsChange("descriptions", [
+                        ...descriptions,
+                        val,
+                      ]);
+                    }
+                    e.currentTarget.value = "";
+                  }
+                }}
+                onBlur={(e) => {
+                  const val = e.currentTarget.value.trim();
+                  if (val && !descriptions.includes(val)) {
+                    handleSkillsChange("descriptions", [...descriptions, val]);
+                  }
+                  e.currentTarget.value = "";
+                }}
+              />
+            </div>
+          </InputGroupWrapper>
         </div>
         <div className="col-span-full mb-4 mt-6 border-t-2 border-dotted border-gray-200" />
         <InputGroupWrapper
