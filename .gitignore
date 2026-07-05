@@ -1,35 +1,51 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# ==========================================
+# RESUMEFLOW GIT IGNORE CONFIGURATION
+# ==========================================
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# 1. Dependency Directories
+node_modules/
+/jspm_packages/
+/web_modules/
 
-# testing
-/coverage
+# 2. Build & Production Outputs
+.next/
+out/
+build/
+dist/
+/public/pdf-viewer/
 
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
+# 3. Environment & Local Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 *.pem
+*.key
 
-# debug
+# 4. Debug Logs & Crash Reports
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# local env files
-.env*.local
+# 5. IDE & OS Metadata Configuration
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+.DS_Store
+Thumbs.db
 
-# vercel
-.vercel
-
-# typescript
+# 6. Cache & Compilation Directories
+.swc/
+.turbo/
+.cache/
+.eslintcache
 *.tsbuildinfo
 next-env.d.ts
