@@ -27,4 +27,22 @@ describe("AIPromptRegistry", () => {
     const badJsonResponse = '{"bullets": ["A"], "impactScoreIncrease": "not-a-number"}';
     expect(() => AIPromptRegistry.validate(prompt, badJsonResponse)).toThrow();
   });
+
+  it("should validate resume suggestions schema cleanly", () => {
+    const prompt = AIPromptRegistry.getPrompt("resume-suggestions", "v1");
+    const jsonResponse = JSON.stringify({
+      suggestions: [
+        {
+          suggestionText: "Use 'Orchestrated' instead of 'Worked on'.",
+          explanation: "More active verb.",
+          expectedBenefit: "Increased resume impact.",
+          confidenceScore: 0.95,
+          atsImpact: 8,
+          category: "Action Verbs",
+        },
+      ],
+    });
+    const validated = AIPromptRegistry.validate(prompt, jsonResponse);
+    expect(validated.suggestions[0].category).toBe("Action Verbs");
+  });
 });

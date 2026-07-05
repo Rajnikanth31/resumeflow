@@ -81,6 +81,7 @@ model User {
   aiLogs        AIRequestLog[]
   notifications UserNotification[]
   conversations Conversation[]
+  suggestionLogs AISuggestionLog[]
 }
 
 model Account {
@@ -482,4 +483,36 @@ model Message {
   createdAt      DateTime     @default(now())
 
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+model AISuggestionLog {
+  id             String           @id @default(uuid())
+  userId         String
+  promptId       String
+  suggestionText String           @db.Text
+  explanation    String           @db.Text
+  expectedBenefit String          @db.Text
+  confidenceScore Float
+  atsImpact      Float
+  category       String
+  state          SuggestionState  @default(PENDING)
+  feedback       FeedbackState    @default(NONE)
+  tokensUsed     Int              @default(0)
+  responseTimeMs Int              @default(0)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum SuggestionState {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum FeedbackState {
+  NONE
+  HELPFUL
+  NOT_HELPFUL
 }

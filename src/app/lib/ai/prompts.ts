@@ -46,6 +46,35 @@ export class AIPromptRegistry {
         }),
       },
     },
+    "resume-suggestions": {
+      "v1": {
+        id: "resume-suggestions",
+        version: "v1",
+        systemTemplate: "You are an expert career consultant. Provide optimized suggestions for this resume section. If a Job Description is provided, align your suggestions directly with it. You must return a JSON array of suggestion items.",
+        userTemplate: "Section Content:\n{{content}}\n\nJob Description (Optional):\n{{jobDescription}}\n\nSection Type:\n{{sectionType}}",
+        outputFormat: "JSON",
+        schema: z.object({
+          suggestions: z.array(
+            z.object({
+              suggestionText: z.string(),
+              explanation: z.string(),
+              expectedBenefit: z.string(),
+              confidenceScore: z.number().min(0).max(1),
+              atsImpact: z.number().min(0).max(10),
+              category: z.enum([
+                "Grammar",
+                "ATS",
+                "Keywords",
+                "Action Verbs",
+                "Quantification",
+                "Readability",
+                "Recruiter Recommendations",
+              ]),
+            })
+          ),
+        }),
+      },
+    },
   };
 
   static getPrompt(id: string, version = "v1"): PromptDefinition {

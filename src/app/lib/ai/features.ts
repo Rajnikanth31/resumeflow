@@ -45,6 +45,16 @@ export class AIFeatureRegistry {
         improvementTips: z.array(z.string()),
       }),
     },
+    "resume-suggestions": {
+      id: "resume-suggestions",
+      promptId: "resume-suggestions",
+      version: "v1",
+      provider: "lm-studio",
+      model: "local-model",
+      temperature: 0.7,
+      streaming: false,
+      permissions: ["user-role"],
+    },
   };
 
   static getFeature(id: string): AIFeatureConfig {
