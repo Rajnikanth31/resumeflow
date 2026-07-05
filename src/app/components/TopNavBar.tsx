@@ -19,7 +19,7 @@ export const TopNavBar = () => {
     <header
       aria-label="Site Header"
       className={cx(
-        "flex h-[var(--top-nav-bar-height)] items-center border-b-2 border-gray-100 px-3 lg:px-12",
+        "flex h-[var(--top-nav-bar-height)] items-center border-b border-border bg-background text-foreground px-3 lg:px-12",
         isHomePage && "bg-dot"
       )}
     >
@@ -29,7 +29,7 @@ export const TopNavBar = () => {
           <Image
             src={logoSrc}
             alt="ResumeFlow Logo"
-            className="h-8 w-full"
+            className="h-8 w-full dark:invert"
             priority
           />
         </Link>
@@ -43,7 +43,7 @@ export const TopNavBar = () => {
           ].map(([href, text]) => (
             <Link
               key={text}
-              className="rounded-md px-1.5 py-2 text-gray-500 hover:bg-gray-100 focus-visible:bg-gray-100 lg:px-4"
+              className="rounded-md px-1.5 py-2 text-muted-foreground hover:bg-zinc-100 dark:hover:bg-zinc-850 dark:hover:bg-zinc-800 lg:px-4"
               href={href}
             >
               {text}

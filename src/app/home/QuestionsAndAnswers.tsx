@@ -37,17 +37,17 @@ const QAS = [
 
 export const QuestionsAndAnswers = () => {
   return (
-    <section className="py-20 lg:py-28 bg-zinc-950 text-white rounded-3xl px-8 lg:px-16 border border-zinc-900 mt-12 mb-12">
+    <section className="py-20 lg:py-28 bg-card text-foreground rounded-3xl px-8 lg:px-16 border border-border mt-12 mb-12">
       <div className="text-center max-w-2xl mx-auto space-y-4 mb-16">
         <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Frequently Asked Questions</h2>
-        <p className="text-sm text-zinc-400">Common questions about the ResumeFlow platform and features.</p>
+        <p className="text-sm text-muted-foreground">Common questions about the ResumeFlow platform and features.</p>
       </div>
 
-      <div className="max-w-3xl mx-auto divide-y divide-zinc-800">
+      <div className="max-w-3xl mx-auto divide-y divide-border">
         {QAS.map(({ question, answer }) => (
           <div key={question} className="py-6 space-y-3">
-            <h3 className="text-base font-bold text-zinc-100">{question}</h3>
-            <div className="text-sm text-zinc-400 leading-relaxed">{answer}</div>
+            <h3 className="text-base font-bold text-foreground">{question}</h3>
+            <div className="text-sm text-muted-foreground leading-relaxed">{answer}</div>
           </div>
         ))}
       </div>

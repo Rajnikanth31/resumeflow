@@ -6,7 +6,7 @@ import { QuestionsAndAnswers } from "home/QuestionsAndAnswers";
 
 export default function Home() {
   return (
-    <main className="mx-auto max-w-screen-2xl bg-zinc-950 px-8 pb-32 text-white lg:px-12 min-h-screen py-8 space-y-12">
+    <main className="mx-auto max-w-screen-2xl px-8 pb-32 lg:px-12 min-h-screen py-8 space-y-12 bg-background text-foreground">
       <Hero />
       <Steps />
       <Features />
