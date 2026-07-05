@@ -3,6 +3,8 @@
  */
 import { POST as createHandler, GET as listHandler } from "../route";
 import { GET as getHandler, PUT as putHandler, DELETE as deleteHandler } from "../[id]/route";
+import { POST as duplicateHandler } from "../[id]/duplicate/route";
+import { POST as restoreHandler } from "../[id]/restore/route";
 import { db } from "lib/db";
 import { getServerSession } from "next-auth/next";
 
@@ -92,6 +94,60 @@ describe("Resume CRUD Endpoints", () => {
           }),
           skip: 0,
           take: 5,
+        })
+      );
+    });
+  });
+
+  describe("Duplicate and Restore API routes", () => {
+    it("should duplicate resume on success", async () => {
+      (getServerSession as jest.Mock).mockResolvedValue({
+        user: { id: "user-uuid" },
+      });
+      (db.resume.findFirst as jest.Mock).mockResolvedValue({
+        id: "source-uuid",
+        title: "Source Resume",
+        workHistory: [],
+        education: [],
+        projects: [],
+        skills: [],
+        customs: [],
+      });
+      (db.resume.create as jest.Mock).mockResolvedValue({
+        id: "copy-uuid",
+        title: "Copy of Source Resume",
+      });
+
+      const res = await duplicateHandler(
+        new Request("http://localhost/api/resumes/source-uuid/duplicate", { method: "POST" }),
+        { params: { id: "source-uuid" } }
+      );
+
+      expect(res.status).toBe(201);
+      const data = await res.json();
+      expect(data.resume.id).toBe("copy-uuid");
+    });
+
+    it("should restore soft-deleted resume on success", async () => {
+      (getServerSession as jest.Mock).mockResolvedValue({
+        user: { id: "user-uuid" },
+      });
+      (db.resume.findFirst as jest.Mock).mockResolvedValue({
+        id: "deleted-uuid",
+      });
+
+      const res = await restoreHandler(
+        new Request("http://localhost/api/resumes/deleted-uuid/restore", { method: "POST" }),
+        { params: { id: "deleted-uuid" } }
+      );
+
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.success).toBe(true);
+      expect(db.resume.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: "deleted-uuid" },
+          data: { deletedAt: null },
         })
       );
     });
