@@ -80,6 +80,11 @@ export const db = {
     update: jest.fn(),
     delete: jest.fn(),
   },
+  aTSReport: {
+    create: jest.fn(),
+    findFirst: jest.fn(),
+    findMany: jest.fn(),
+  },
   resumeJobLink: {
     upsert: jest.fn(),
   },
