@@ -45,4 +45,26 @@ describe("AIPromptRegistry", () => {
     const validated = AIPromptRegistry.validate(prompt, jsonResponse);
     expect(validated.suggestions[0].category).toBe("Action Verbs");
   });
+
+  it("should validate cover letter generator schema cleanly", () => {
+    const prompt = AIPromptRegistry.getPrompt("cover-letter-generator", "v1");
+    const jsonResponse = JSON.stringify({
+      content: "Dear Hiring Manager, this is a test cover letter.",
+      qualityScore: {
+        relevance: 90,
+        professionalism: 95,
+        grammar: 92,
+        atsAlignment: 88,
+      },
+      explanations: {
+        whySectionsWritten: ["Section 1 introduces background"],
+        jobRequirementsAddressed: ["Requirement 1 addressed via experience"],
+        resumeExperiencesEmphasized: ["Emphasized experience at Vercel"],
+      },
+    });
+    const validated = AIPromptRegistry.validate(prompt, jsonResponse);
+    expect(validated.content).toBe("Dear Hiring Manager, this is a test cover letter.");
+    expect(validated.qualityScore.relevance).toBe(90);
+    expect(validated.explanations.whySectionsWritten[0]).toBe("Section 1 introduces background");
+  });
 });

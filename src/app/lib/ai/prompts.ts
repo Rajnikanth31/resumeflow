@@ -160,6 +160,29 @@ export class AIPromptRegistry {
         }),
       },
     },
+    "cover-letter-generator": {
+      v1: {
+        id: "cover-letter-generator",
+        version: "v1",
+        systemTemplate: "You are an expert career consultant. Generate a highly tailored cover letter based on the candidate's resume and target job description. Support the requested recruiter tone (e.g. Formal, Conversational, Technical, Creative). Analyze the company name, role, industry, and hiring style to personalize the letter. Output a JSON object containing the markdown cover letter text, an explainable breakdown of why key sections were written, and quality scores.",
+        userTemplate: "Candidate Resume:\n{{resume}}\n\nTarget Job Description:\n{{jobDescription}}\n\nRecruiter Tone:\n{{tone}}\n\nCompany Name:\n{{company}}\n\nRole:\n{{role}}\n\nIndustry:\n{{industry}}\n\nHiring Style:\n{{hiringStyle}}",
+        outputFormat: "JSON",
+        schema: z.object({
+          content: z.string(),
+          qualityScore: z.object({
+            relevance: z.number().min(0).max(100),
+            professionalism: z.number().min(0).max(100),
+            grammar: z.number().min(0).max(100),
+            atsAlignment: z.number().min(0).max(100),
+          }),
+          explanations: z.object({
+            whySectionsWritten: z.array(z.string()),
+            jobRequirementsAddressed: z.array(z.string()),
+            resumeExperiencesEmphasized: z.array(z.string()),
+          }),
+        }),
+      },
+    },
   };
 
   static getPrompt(id: string, version = "v1"): PromptDefinition {

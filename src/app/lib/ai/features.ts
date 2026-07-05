@@ -85,6 +85,16 @@ export class AIFeatureRegistry {
       streaming: false,
       permissions: ["user-role"],
     },
+    "cover-letter-generator": {
+      id: "cover-letter-generator",
+      promptId: "cover-letter-generator",
+      version: "v1",
+      provider: "lm-studio",
+      model: "local-model",
+      temperature: 0.3,
+      streaming: false,
+      permissions: ["user-role"],
+    },
   };
 
   static getFeature(id: string): AIFeatureConfig {
