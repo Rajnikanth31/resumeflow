@@ -73,6 +73,13 @@ export const db = {
     findFirst: jest.fn(),
     update: jest.fn(),
   },
+  jobDescription: {
+    create: jest.fn(),
+    findFirst: jest.fn(),
+    findMany: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  },
   $transaction: jest.fn(async (cb) => {
     return cb(db);
   }),
