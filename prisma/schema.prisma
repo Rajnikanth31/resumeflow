@@ -80,6 +80,7 @@ model User {
   auditLogs     SystemAuditLog[]
   aiLogs        AIRequestLog[]
   notifications UserNotification[]
+  conversations Conversation[]
 }
 
 model Account {
@@ -458,4 +459,25 @@ model FeatureFlag {
   usersRule   String[] // Array of user emails explicitly whitelisted for beta tests
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  userId    String
+  title     String    @default("New Chat")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  Message[]
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  role           String
+  content        String       @db.Text
+  createdAt      DateTime     @default(now())
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 }

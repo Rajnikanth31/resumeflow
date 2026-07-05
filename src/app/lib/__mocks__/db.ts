@@ -55,6 +55,16 @@ export const db = {
     createMany: jest.fn(),
     deleteMany: jest.fn(),
   },
+  conversation: {
+    create: jest.fn(),
+    findFirst: jest.fn(),
+    findMany: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  },
+  message: {
+    create: jest.fn(),
+  },
   $transaction: jest.fn(async (cb) => {
     return cb(db);
   }),
