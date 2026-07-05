@@ -6,6 +6,10 @@
 @layer base {
   body {
     @apply bg-background text-foreground transition-colors duration-200;
+    font-family: var(--font-sans), sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading), sans-serif;
   }
 }
 
@@ -81,4 +85,80 @@
     box-shadow: none !important;
     background: transparent !important;
   }
+}
+
+/* Gold Theme Mockup Utilities */
+.at-backdrop {
+  position: relative;
+}
+.at-backdrop::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(218, 164, 82, 0.11) 0%, transparent 38%),
+    radial-gradient(circle at 84% 12%, rgba(104, 128, 149, 0.12) 0%, transparent 28%),
+    linear-gradient(180deg, rgba(6, 9, 13, 0.95), rgba(8, 12, 17, 0.98));
+  pointer-events: none;
+  z-index: -1;
+}
+
+.btn-primary-gold {
+  background: linear-gradient(135deg, #c99549 0%, #e0ba74 100%);
+  color: #10161d;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+.btn-primary-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 164, 88, 0.25);
+}
+
+.btn-secondary-gold {
+  background: rgba(18, 27, 34, 0.88);
+  color: #f2efe6;
+  border: 1px solid rgba(214, 175, 110, 0.12);
+  transition: all 0.2s ease;
+}
+.btn-secondary-gold:hover {
+  background: rgba(21, 32, 41, 0.92);
+  border-color: rgba(214, 175, 110, 0.28);
+}
+
+.card-gold {
+  background: linear-gradient(180deg, rgba(12, 18, 24, 0.94), rgba(10, 15, 20, 0.9));
+  border: 1px solid rgba(214, 175, 110, 0.12);
+  border-radius: 1rem;
+  transition: all 0.2s ease;
+}
+.card-gold:hover {
+  border-color: rgba(214, 175, 110, 0.28);
+}
+
+.tag-gold {
+  background: rgba(18, 27, 34, 0.86);
+  color: #d7c59b;
+  border: 1px solid rgba(214, 175, 110, 0.10);
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.mono-chip-gold {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 4px 10px;
+  border: 1px solid rgba(214, 175, 110, 0.16);
+  border-radius: 9999px;
+  color: #d8caa7;
+  background: rgba(14, 20, 26, 0.72);
+  font-family: monospace;
+}
+
+.section-kicker-gold {
+  color: #d5ba82;
+  font-family: monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }

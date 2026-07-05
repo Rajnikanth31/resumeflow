@@ -7,6 +7,7 @@ import { Comparison } from "home/Comparison";
 import { Testimonials } from "home/Testimonials";
 import { Pricing } from "home/Pricing";
 import { QuestionsAndAnswers } from "home/QuestionsAndAnswers";
+import { FinalCta } from "home/FinalCta";
 import { Footer } from "home/Footer";
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
       <Testimonials />
       <Pricing />
       <QuestionsAndAnswers />
+      <FinalCta />
       <Footer />
     </main>
   );
