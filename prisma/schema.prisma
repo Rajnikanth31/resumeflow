@@ -401,18 +401,20 @@ model SystemAuditLog {
 }
 
 model AIRequestLog {
-  id           String   @id @default(uuid())
-  userId       String
-  provider     String
-  model        String
-  tokensSent   Int
-  tokensRecv   Int
-  latencyMs    Int
-  purpose      String   // BulletRewrite, CoverLetter, Parsing
-  success      Boolean
-  createdAt    DateTime @default(now())
+  id            String   @id @default(uuid())
+  userId        String
+  provider      String
+  model         String
+  tokensSent    Int
+  tokensRecv    Int
+  latencyMs     Int
+  purpose       String   // BulletRewrite, CoverLetter, Parsing
+  promptVersion String   @default("v1")
+  success       Boolean
+  errorDetails  String?  @db.Text
+  createdAt     DateTime @default(now())
 
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ATSReport {

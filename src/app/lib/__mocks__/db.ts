@@ -65,6 +65,9 @@ export const db = {
   message: {
     create: jest.fn(),
   },
+  aIRequestLog: {
+    create: jest.fn(),
+  },
   $transaction: jest.fn(async (cb) => {
     return cb(db);
   }),

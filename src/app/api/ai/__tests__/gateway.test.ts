@@ -5,9 +5,11 @@ import { POST as chatHandler } from "../chat/route";
 import { GET as healthHandler } from "../health/route";
 import { getServerSession } from "next-auth/next";
 import { AIProviderFactory } from "lib/ai/factory";
+import { db } from "lib/db";
 
 jest.mock("next-auth/next");
 jest.mock("lib/ai/factory");
+jest.mock("lib/db");
 
 describe("AI Gateway and Health API", () => {
   beforeEach(() => {
@@ -48,6 +50,17 @@ describe("AI Gateway and Health API", () => {
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.content).toBe("Optimized Resume");
+      expect(db.aIRequestLog.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            userId: "user-1",
+            provider: "lm-studio",
+            model: "local-model",
+            purpose: "resume-optimization",
+            success: true,
+          }),
+        })
+      );
     });
   });
 

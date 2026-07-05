@@ -54,6 +54,83 @@ class OpenAICompatibleProvider implements AIProvider {
       throw err;
     }
   }
+
+  async generateStream(
+    messages: AIChatMessage[],
+    config: AIConfig,
+    onChunk: (chunk: string) => void
+  ): Promise<AIResponse> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), config.timeout || 30000);
+
+    try {
+      const res = await fetch(`${this.baseUrl}/chat/completions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
+        },
+        body: JSON.stringify({
+          model: config.model,
+          messages,
+          temperature: config.temperature ?? 0.7,
+          max_tokens: config.maxTokens,
+          stream: true,
+        }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`AI Provider ${this.providerType} returned status ${res.status}: ${errorText}`);
+      }
+
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let fullContent = "";
+
+      if (!reader) {
+        throw new Error("No readable stream in response body");
+      }
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        const lines = chunk.split("\n");
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed === "data: [DONE]") continue;
+
+          if (trimmed.startsWith("data: ")) {
+            try {
+              const data = JSON.parse(trimmed.slice(6));
+              const deltaContent = data.choices?.[0]?.delta?.content || "";
+              if (deltaContent) {
+                fullContent += deltaContent;
+                onChunk(deltaContent);
+              }
+            } catch (e) {
+              // Ignore partial parsing errors
+            }
+          }
+        }
+      }
+
+      return {
+        content: fullContent,
+        model: config.model,
+        provider: this.providerType,
+      };
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+      throw err;
+    }
+  }
 }
 
 class GeminiProvider implements AIProvider {
