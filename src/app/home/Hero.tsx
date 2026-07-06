@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import {
   SparklesIcon,
@@ -11,7 +11,8 @@ import {
 /* ---------------------------------------------------------------------------
    Live product simulation — the hero cycles through 4 stages that mimic a
    real tailoring session: analyze → quantify bullet → add keywords → done.
-   Respects prefers-reduced-motion (jumps straight to the finished state).
+   Extras: typing role line, cursor-follow 3D tilt, drifting gradient glows.
+   All of it collapses to a calm final state under prefers-reduced-motion.
 --------------------------------------------------------------------------- */
 
 const WEAK_BULLET = "Worked on a search feature for the platform.";
@@ -23,6 +24,14 @@ const STAGES = [
   { score: 81, suggestion: "Quantify the impact in your first bullet", applied: true },
   { score: 89, suggestion: "Add missing keywords: Next.js, PostgreSQL", applied: true },
   { score: 94, suggestion: "Resume is interview-ready", applied: true },
+];
+
+const ROLES = [
+  "Senior Frontend Engineer",
+  "Product Designer",
+  "DevOps Engineer",
+  "Data Scientist",
+  "ML Engineer",
 ];
 
 const BASE_SKILLS = ["React", "TypeScript", "Node.js", "GraphQL"];
@@ -40,11 +49,72 @@ const usePrefersReducedMotion = () => {
   return reduced;
 };
 
+/** Typewriter loop over ROLES */
+const useTypedRole = (enabled: boolean) => {
+  const [text, setText] = useState(enabled ? "" : ROLES[0]);
+  const state = useRef({ role: 0, deleting: false });
+
+  useEffect(() => {
+    if (!enabled) {
+      setText(ROLES[0]);
+      return;
+    }
+    let timer: ReturnType<typeof setTimeout>;
+    const tick = () => {
+      const { role, deleting } = state.current;
+      const target = ROLES[role % ROLES.length];
+      setText((prev) => {
+        let next = prev;
+        let delay = deleting ? 35 : 70;
+        if (!deleting) {
+          next = target.slice(0, prev.length + 1);
+          if (next === target) {
+            state.current.deleting = true;
+            delay = 2000;
+          }
+        } else {
+          next = prev.slice(0, -1);
+          if (next === "") {
+            state.current.deleting = false;
+            state.current.role += 1;
+            delay = 400;
+          }
+        }
+        timer = setTimeout(tick, delay);
+        return next;
+      });
+    };
+    timer = setTimeout(tick, 400);
+    return () => clearTimeout(timer);
+  }, [enabled]);
+
+  return text;
+};
+
 export const Hero = () => {
   const reducedMotion = usePrefersReducedMotion();
   const [stage, setStage] = useState(0);
   const [score, setScore] = useState(STAGES[0].score);
   const scoreRef = useRef(STAGES[0].score);
+  const roleText = useTypedRole(!reducedMotion);
+
+  // Cursor-follow 3D tilt on the mockup
+  const tiltRef = useRef<HTMLDivElement>(null);
+  const handleTilt = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (reducedMotion || !tiltRef.current) return;
+      const rect = tiltRef.current.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      tiltRef.current.style.transform = `perspective(1100px) rotateY(${px * 6}deg) rotateX(${py * -6}deg)`;
+    },
+    [reducedMotion]
+  );
+  const resetTilt = useCallback(() => {
+    if (tiltRef.current) {
+      tiltRef.current.style.transform = "perspective(1100px) rotateY(0deg) rotateX(0deg)";
+    }
+  }, []);
 
   // Advance simulation stage
   useEffect(() => {
@@ -85,10 +155,10 @@ export const Hero = () => {
 
   return (
     <section className="relative overflow-hidden">
-      {/* Premium gradient lighting */}
+      {/* Premium gradient lighting — slowly drifting */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 left-1/2 h-[560px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,hsl(var(--primary)/0.14),transparent)]" />
-        <div className="absolute -right-40 top-24 h-[420px] w-[420px] rounded-full bg-[radial-gradient(closest-side,hsl(var(--accent)/0.10),transparent)]" />
+        <div className="absolute -top-40 left-1/2 h-[560px] w-[900px] -translate-x-1/2 animate-drift rounded-full bg-[radial-gradient(closest-side,hsl(var(--primary)/0.14),transparent)]" />
+        <div className="absolute -right-40 top-24 h-[420px] w-[420px] animate-drift-reverse rounded-full bg-[radial-gradient(closest-side,hsl(var(--accent)/0.10),transparent)]" />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border)/0.35)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border)/0.35)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_0%,black,transparent)]" />
       </div>
 
@@ -107,9 +177,7 @@ export const Hero = () => {
             style={{ animationDelay: "80ms" }}
           >
             Your resume, engineered to{" "}
-            <span className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] bg-clip-text text-transparent">
-              get interviews
-            </span>
+            <span className="text-shimmer animate-shimmer">get interviews</span>
           </h1>
 
           <p
@@ -126,7 +194,7 @@ export const Hero = () => {
           >
             <Link
               href="/resume-import"
-              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-base font-semibold text-primary-foreground shadow-e2 transition-all duration-200 hover:shadow-glow"
+              className="btn-shine group inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-base font-semibold text-primary-foreground shadow-e2 transition-all duration-200 hover:shadow-glow"
             >
               Build my resume — free
               <ArrowRightIcon
@@ -158,9 +226,16 @@ export const Hero = () => {
         {/* ----- Live product simulation ----- */}
         <div className="relative lg:col-span-6" aria-hidden="true">
           <div className="animate-fade-up" style={{ animationDelay: "200ms" }}>
-            <div className="relative mx-auto max-w-md lg:ml-auto">
-              {/* Resume document */}
-              <div className="relative rounded-2xl border border-border bg-card p-1.5 shadow-e4">
+            <div
+              className="relative mx-auto max-w-md lg:ml-auto"
+              onMouseMove={handleTilt}
+              onMouseLeave={resetTilt}
+            >
+              {/* Resume document (tilts toward cursor) */}
+              <div
+                ref={tiltRef}
+                className="relative rounded-2xl border border-border bg-card p-1.5 shadow-e4 transition-transform duration-200 ease-out will-change-transform"
+              >
                 <div className="rounded-xl border border-border bg-background p-6">
                   <div className="mb-4 flex items-center justify-between border-b border-border pb-3">
                     <div className="flex items-center gap-1.5">
@@ -174,8 +249,9 @@ export const Hero = () => {
                   </div>
 
                   <div className="text-lg font-bold text-foreground">Alex Morgan</div>
-                  <div className="text-sm font-medium text-primary">
-                    Senior Frontend Engineer
+                  <div className="flex h-5 items-center text-sm font-medium text-primary">
+                    {roleText}
+                    <span className="ml-0.5 inline-block h-4 w-[2px] animate-blink rounded-full bg-primary" />
                   </div>
 
                   <div className="mt-4 border-t border-border pt-4">

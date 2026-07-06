@@ -53,6 +53,21 @@ module.exports = {
           from: { transform: "translateX(0)" },
           to: { transform: "translateX(-50%)" },
         },
+        drift: {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "50%": { transform: "translate(40px, -24px) scale(1.06)" },
+        },
+        "drift-reverse": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "50%": { transform: "translate(-32px, 20px) scale(1.1)" },
+        },
+        shimmer: {
+          to: { backgroundPosition: "-200% center" },
+        },
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both",
@@ -60,6 +75,10 @@ module.exports = {
         float: "float 6s ease-in-out infinite",
         "float-slow": "float 9s ease-in-out infinite",
         marquee: "marquee 36s linear infinite",
+        drift: "drift 16s ease-in-out infinite",
+        "drift-reverse": "drift-reverse 20s ease-in-out infinite",
+        shimmer: "shimmer 5s linear infinite",
+        blink: "blink 1.1s step-end infinite",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "-apple-system", "sans-serif"],

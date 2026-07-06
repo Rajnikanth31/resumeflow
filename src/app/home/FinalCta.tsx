@@ -17,7 +17,7 @@ export const FinalCta = () => (
           <div className="relative">
             <h2 className="mx-auto max-w-2xl text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
               Your next interview starts with the{" "}
-              <span className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] bg-clip-text text-transparent">
+              <span className="text-shimmer animate-shimmer">
                 right resume
               </span>
             </h2>
@@ -28,7 +28,7 @@ export const FinalCta = () => (
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
                 href="/resume-import"
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-7 py-3.5 text-base font-semibold text-primary-foreground shadow-e2 transition-all duration-200 hover:shadow-glow sm:w-auto"
+                className="btn-shine group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-7 py-3.5 text-base font-semibold text-primary-foreground shadow-e2 transition-all duration-200 hover:shadow-glow sm:w-auto"
               >
                 Build my resume — free
                 <ArrowRightIcon

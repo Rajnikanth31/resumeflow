@@ -27,7 +27,7 @@ export const Templates = () => (
       {TEMPLATES.map(({ name, desc, accent }, i) => (
         <Reveal key={name} delay={i * 100}>
           <Link
-            href="/resume-builder"
+            href="/resume-import"
             className="group block rounded-2xl border border-border bg-card p-5 shadow-e1 transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-e3"
           >
             {/* Mini resume mockup */}
