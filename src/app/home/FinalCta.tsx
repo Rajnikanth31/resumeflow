@@ -1,42 +1,51 @@
 import React from "react";
 import Link from "next/link";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import { Reveal } from "home/Reveal";
 
-export const FinalCta = () => {
-  return (
-    <section id="cta" className="max-w-[1180px] mx-auto py-12 px-6">
-      <div className="relative border border-border rounded-3xl overflow-hidden py-16 px-8 text-center bg-gradient-to-b from-card to-card/90 shadow-2xl">
-        {/* Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(212,170,92,0.08),transparent_55%)] pointer-events-none" />
+export const FinalCta = () => (
+  <section id="cta" className="relative py-16 sm:py-20 lg:py-24">
+    <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
+      <Reveal>
+        <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card px-6 py-16 text-center shadow-e4 sm:px-12 lg:py-20">
+          {/* Gradient lighting */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+            <div className="absolute -top-24 left-1/2 h-[360px] w-[640px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,hsl(var(--primary)/0.18),transparent)]" />
+            <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-[radial-gradient(closest-side,hsl(var(--accent)/0.12),transparent)]" />
+          </div>
 
-        <div className="relative space-y-6">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-heading tracking-tight leading-tight max-w-2xl mx-auto text-foreground">
-            Your next interview starts with the{" "}
-            <span className="bg-gradient-to-r from-[color:var(--theme-gold)] to-[color:var(--theme-gold-secondary)] bg-clip-text text-transparent">
-              right resume
-            </span>
-            .
-          </h2>
-
-          <p className="text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
-            Build, score, and export a job-ready application package in minutes. Free — no credit card required.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Link
-              href="/resume-import"
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-lg hover:bg-indigo-500 transition-all w-full sm:w-auto"
-            >
-              Build Your Resume
-            </Link>
-            <a
-              href="#score"
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-secondary border border-border px-6 py-3 text-sm font-bold text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all w-full sm:w-auto"
-            >
-              Watch Demo
-            </a>
+          <div className="relative">
+            <h2 className="mx-auto max-w-2xl text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              Your next interview starts with the{" "}
+              <span className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] bg-clip-text text-transparent">
+                right resume
+              </span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-muted-foreground">
+              Build, score, and export a job-ready application package in minutes.
+              Free to start — no credit card required.
+            </p>
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link
+                href="/resume-import"
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-7 py-3.5 text-base font-semibold text-primary-foreground shadow-e2 transition-all duration-200 hover:shadow-glow sm:w-auto"
+              >
+                Build my resume — free
+                <ArrowRightIcon
+                  className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </Link>
+              <a
+                href="#ats"
+                className="inline-flex w-full items-center justify-center rounded-xl border border-border bg-background px-7 py-3.5 text-base font-semibold text-foreground transition-colors duration-200 hover:bg-muted sm:w-auto"
+              >
+                See how scoring works
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-  );
-};
+      </Reveal>
+    </div>
+  </section>
+);

@@ -2,53 +2,65 @@ import {
   DocumentPlusIcon,
   MagnifyingGlassIcon,
   SparklesIcon,
-  FolderArrowDownIcon
+  FolderArrowDownIcon,
 } from "@heroicons/react/24/outline";
+import { Section, SectionHeader } from "home/Section";
+import { Reveal } from "home/Reveal";
 
 const STEPS = [
   {
     icon: DocumentPlusIcon,
-    title: "1. Create Resume Profile",
-    text: "Import an existing PDF or build from scratch in our high-fidelity editor workspace."
+    title: "Import your resume",
+    text: "Drop in an existing PDF or start fresh in the editor. Your master profile lives in your browser.",
   },
   {
     icon: MagnifyingGlassIcon,
-    title: "2. Input Job Profile",
-    text: "Import target job details including company, tech stack, and hiring style preferences."
+    title: "Add the target job",
+    text: "Paste the job description. ResumeFlow extracts the skills, keywords, and seniority signals that matter.",
   },
   {
     icon: SparklesIcon,
-    title: "3. Run AI Alignment",
-    text: "Review ATS score reports, generate cover letter canvas edits, and polish bullet metrics."
+    title: "Run AI alignment",
+    text: "Review your ATS score, apply AI bullet rewrites, and generate a matching cover letter.",
   },
   {
     icon: FolderArrowDownIcon,
-    title: "4. Export Package Bundle",
-    text: "Download a ZIP package containing print-ready PDFs, Word-compatible DOCX documents, and ATS logs."
-  }
+    title: "Export & apply",
+    text: "Download a complete package — PDF resume, DOCX cover letter, and ATS report — in one ZIP.",
+  },
 ];
 
-export const Steps = () => {
-  return (
-    <section className="py-16 bg-card text-foreground rounded-3xl px-8 lg:px-16 border border-border mt-12">
-      <div className="text-center max-w-2xl mx-auto space-y-4 mb-16">
-        <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl">How It Works</h2>
-        <p className="text-sm text-muted-foreground">Follow our simple workflow to optimize your career outcomes.</p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-        {STEPS.map(({ icon: Icon, title, text }) => (
-          <div key={title} className="flex flex-col gap-4 p-6 border border-border bg-card rounded-2xl">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400">
-              <Icon className="h-5 w-5" />
-            </div>
-            <div className="space-y-1.5">
-              <h3 className="text-sm font-bold text-foreground">{title}</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">{text}</p>
+export const Steps = () => (
+  <Section id="how-it-works" className="bg-card/50 border-y border-border">
+    <SectionHeader
+      kicker="How it works"
+      title="From resume to application in four steps"
+      subtitle="No templates to fight, no formatting rabbit holes — a workflow built around how hiring actually happens."
+    />
+    <ol className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+      {STEPS.map(({ icon: Icon, title, text }, i) => (
+        <Reveal as="li" key={title} delay={i * 110} className="relative">
+          {/* connector line (desktop) */}
+          {i < STEPS.length - 1 && (
+            <span
+              aria-hidden="true"
+              className="absolute left-[calc(50%+2rem)] top-6 hidden h-px w-[calc(100%-4rem)] bg-gradient-to-r from-border to-transparent lg:block"
+            />
+          )}
+          <div className="flex flex-col items-start gap-4 lg:items-center lg:text-center">
+            <span className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-primary/20 bg-primary/[0.06] text-primary">
+              <Icon className="h-5 w-5" aria-hidden="true" />
+              <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">
+                {i + 1}
+              </span>
+            </span>
+            <div>
+              <h3 className="text-base font-bold text-foreground">{title}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{text}</p>
             </div>
           </div>
-        ))}
-      </div>
-    </section>
-  );
-};
+        </Reveal>
+      ))}
+    </ol>
+  </Section>
+);
