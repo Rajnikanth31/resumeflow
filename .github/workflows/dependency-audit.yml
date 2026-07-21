@@ -2,7 +2,7 @@ name: Dependency Audit
 
 on:
   schedule:
-    - cron: '0 0 * * 1'
+    - cron: '0 0 1 * *' # Monthly schedule to conserve GitHub Actions Free Tier minutes
   workflow_dispatch:
 
 jobs:
