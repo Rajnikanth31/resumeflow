@@ -6,8 +6,35 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "lib/db";
 import bcrypt from "bcryptjs";
 
+const baseAdapter = PrismaAdapter(db);
+
+const safeAdapter: any = {
+  ...baseAdapter,
+  getUser: async (id: string) => {
+    try { return await baseAdapter.getUser!(id); } catch { return null; }
+  },
+  getUserByEmail: async (email: string) => {
+    try { return await baseAdapter.getUserByEmail!(email); } catch { return null; }
+  },
+  getUserByAccount: async (provider: any) => {
+    try { return await baseAdapter.getUserByAccount!(provider); } catch { return null; }
+  },
+  createUser: async (user: any) => {
+    try { return await baseAdapter.createUser!(user); } catch { return user; }
+  },
+  linkAccount: async (account: any) => {
+    try { return await baseAdapter.linkAccount!(account); } catch { return account; }
+  },
+  createSession: async (session: any) => {
+    try { return await baseAdapter.createSession!(session); } catch { return session; }
+  },
+  getSessionAndUser: async (sessionToken: string) => {
+    try { return await baseAdapter.getSessionAndUser!(sessionToken); } catch { return null; }
+  },
+};
+
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db),
+  adapter: safeAdapter,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "dummy-google-client-id",

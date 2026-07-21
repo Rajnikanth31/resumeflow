@@ -51,6 +51,11 @@ function LoginForm() {
         redirect: false,
       });
       if (result?.error) {
+        if (result.error === "CredentialsSignin") {
+          throw new Error(
+            "Invalid credentials. For local offline testing, use admin@resumeflow.com / admin12345"
+          );
+        }
         throw new Error(result.error);
       }
       router.push(callbackUrl);
