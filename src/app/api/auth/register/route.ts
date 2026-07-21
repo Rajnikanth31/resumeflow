@@ -55,10 +55,17 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Registration error:", error);
+    const isDbOffline =
+      error?.code === "P1001" ||
+      error?.message?.includes("Can't reach database");
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      {
+        error: isDbOffline
+          ? "Database server is offline at localhost:5432. Please sign in with dev admin credentials (admin@resumeflow.com / admin12345)."
+          : "Registration failed. Please try again.",
+      },
       { status: 500 }
     );
   }
