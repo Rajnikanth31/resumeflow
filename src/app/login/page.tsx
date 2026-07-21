@@ -25,7 +25,9 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(
-    urlError ? "Sign-in failed. Please try again." : null
+    urlError && urlError !== "CredentialsSignin"
+      ? "Sign-in failed. Please try again."
+      : null
   );
   const [loading, setLoading] = useState(false);
 
@@ -51,12 +53,11 @@ function LoginForm() {
         redirect: false,
       });
       if (result?.error) {
-        if (result.error === "CredentialsSignin") {
-          throw new Error(
-            "Invalid credentials. For local offline testing, use admin@resumeflow.com / admin12345"
-          );
-        }
-        throw new Error(result.error);
+        throw new Error(
+          result.error === "CredentialsSignin"
+            ? "Invalid email or password. Please check your credentials."
+            : result.error
+        );
       }
       router.push(callbackUrl);
       router.refresh();
