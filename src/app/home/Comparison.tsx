@@ -12,7 +12,7 @@ const ROWS = [
 ];
 
 export const Comparison = () => (
-  <Section id="comparison" className="bg-card/50 border-y border-border">
+  <Section id="comparison" glow="left">
     <SectionHeader
       kicker="Comparison"
       title="Built for applications, not just documents"

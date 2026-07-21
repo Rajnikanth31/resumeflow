@@ -17,7 +17,7 @@ const SkeletonLine = ({ w, strong = false }: { w: string; strong?: boolean }) =>
 );
 
 export const Templates = () => (
-  <Section id="templates" className="bg-card/50 border-y border-border">
+  <Section id="templates" glow="right">
     <SectionHeader
       kicker="Templates"
       title="Recruiter-approved, ATS-safe layouts"

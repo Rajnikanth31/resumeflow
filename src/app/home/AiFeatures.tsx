@@ -18,7 +18,7 @@ const CAPABILITIES = [
 ];
 
 export const AiFeatures = () => (
-  <Section id="ai">
+  <Section id="ai" glow="left">
     <SectionHeader
       kicker="AI, applied honestly"
       title="Your words, sharpened — never invented"

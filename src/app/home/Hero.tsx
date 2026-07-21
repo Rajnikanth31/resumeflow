@@ -11,8 +11,9 @@ import {
 /* ---------------------------------------------------------------------------
    Live product simulation — the hero cycles through 4 stages that mimic a
    real tailoring session: analyze → quantify bullet → add keywords → done.
-   Extras: typing role line, cursor-follow 3D tilt, drifting gradient glows.
-   All of it collapses to a calm final state under prefers-reduced-motion.
+   Extras: flowing ribbons, typing role line, cursor-follow 3D tilt, and a
+   beam that carries the flow down into the page. All of it collapses to a
+   calm final state under prefers-reduced-motion.
 --------------------------------------------------------------------------- */
 
 const WEAK_BULLET = "Worked on a search feature for the platform.";
@@ -155,11 +156,48 @@ export const Hero = () => {
 
   return (
     <section className="relative overflow-hidden">
-      {/* Premium gradient lighting — slowly drifting */}
+      {/* Premium gradient lighting — slowly drifting, with flowing ribbons */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="absolute -top-40 left-1/2 h-[560px] w-[900px] -translate-x-1/2 animate-drift rounded-full bg-[radial-gradient(closest-side,hsl(var(--primary)/0.14),transparent)]" />
         <div className="absolute -right-40 top-24 h-[420px] w-[420px] animate-drift-reverse rounded-full bg-[radial-gradient(closest-side,hsl(var(--accent)/0.10),transparent)]" />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border)/0.35)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border)/0.35)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_0%,black,transparent)]" />
+        {/* Flowing ribbons — streams crossing the hero */}
+        <svg
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 1440 700"
+          preserveAspectRatio="xMidYMid slice"
+          fill="none"
+        >
+          <defs>
+            <linearGradient id="ribbonGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stopColor="hsl(var(--primary))" stopOpacity="0" />
+              <stop offset="0.5" stopColor="hsl(var(--primary))" />
+              <stop offset="1" stopColor="hsl(var(--accent))" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path
+            className="ribbon"
+            d="M-100,150 C300,60 560,280 820,190 C1080,100 1250,80 1540,160"
+            stroke="url(#ribbonGrad)"
+            strokeWidth="1.5"
+            opacity="0.45"
+          />
+          <path
+            className="ribbon-slow"
+            d="M-100,360 C260,280 580,470 860,380 C1140,290 1300,250 1540,330"
+            stroke="url(#ribbonGrad)"
+            strokeWidth="1.5"
+            opacity="0.3"
+          />
+          <path
+            className="ribbon"
+            style={{ animationDelay: "-6s" }}
+            d="M-100,560 C320,470 620,640 920,540 C1200,450 1350,420 1540,500"
+            stroke="url(#ribbonGrad)"
+            strokeWidth="1.5"
+            opacity="0.22"
+          />
+        </svg>
       </div>
 
       <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-14 px-5 pb-20 pt-16 sm:px-8 lg:grid-cols-12 lg:gap-10 lg:pb-28 lg:pt-24">
@@ -364,6 +402,12 @@ export const Hero = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* The flow continues down into the page */}
+      <div aria-hidden="true" className="absolute bottom-0 left-1/2 h-24 w-px -translate-x-1/2 overflow-hidden">
+        <div className="h-full w-full bg-gradient-to-b from-transparent via-[hsl(var(--primary)/0.5)] to-[hsl(var(--primary))]" />
+        <div className="animate-beam-drop absolute left-0 top-0 h-8 w-full rounded-full bg-[hsl(var(--accent))] blur-[1px]" />
       </div>
     </section>
   );

@@ -1,8 +1,8 @@
 import { Hero } from "home/Hero";
 import { LogoCloud } from "home/LogoCloud";
+import { Steps } from "home/Steps";
 import { Features } from "home/Features";
 import { InteractiveDemo } from "home/InteractiveDemo";
-import { Steps } from "home/Steps";
 import { Templates } from "home/Templates";
 import { AiFeatures } from "home/AiFeatures";
 import { Comparison } from "home/Comparison";
@@ -11,15 +11,17 @@ import { Pricing } from "home/Pricing";
 import { QuestionsAndAnswers } from "home/QuestionsAndAnswers";
 import { FinalCta } from "home/FinalCta";
 import { Footer } from "home/Footer";
+import { ScrollProgress } from "home/ScrollProgress";
 
 export default function Home() {
   return (
     <main className="lp min-h-screen bg-background text-foreground">
+      <ScrollProgress />
       <Hero />
       <LogoCloud />
+      <Steps />
       <Features />
       <InteractiveDemo />
-      <Steps />
       <Templates />
       <AiFeatures />
       <Comparison />

@@ -5,21 +5,38 @@ import { Reveal } from "home/Reveal";
 /**
  * Section shell — enforces one consistent container width, horizontal
  * padding, and vertical rhythm across the entire landing page.
+ * `glow` drifts a soft radial light in from one side so sections flow
+ * into each other instead of sitting in hard boxes.
  */
 export const Section = ({
   id,
   children,
   className,
   container = true,
+  glow,
 }: {
   id?: string;
   children: React.ReactNode;
   className?: string;
   container?: boolean;
+  glow?: "left" | "right";
 }) => (
-  <section id={id} className={cx("relative py-16 sm:py-20 lg:py-24 scroll-mt-16", className)}>
+  <section
+    id={id}
+    className={cx("relative overflow-x-clip py-16 sm:py-20 lg:py-24 scroll-mt-16", className)}
+  >
+    {glow && (
+      <div
+        aria-hidden="true"
+        className={cx(
+          "pointer-events-none absolute top-1/4 h-[440px] w-[440px] rounded-full",
+          glow === "left" ? "-left-48 animate-drift" : "-right-48 animate-drift-reverse",
+          "bg-[radial-gradient(closest-side,hsl(var(--primary)/0.08),transparent)]"
+        )}
+      />
+    )}
     {container ? (
-      <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">{children}</div>
+      <div className="relative mx-auto w-full max-w-6xl px-5 sm:px-8">{children}</div>
     ) : (
       children
     )}

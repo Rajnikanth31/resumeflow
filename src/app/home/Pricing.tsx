@@ -45,7 +45,7 @@ const TIERS = [
 ];
 
 export const Pricing = () => (
-  <Section id="pricing" className="bg-card/50 border-y border-border">
+  <Section id="pricing" glow="right">
     <SectionHeader
       kicker="Pricing"
       title="Simple, transparent pricing"

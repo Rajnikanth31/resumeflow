@@ -7,6 +7,12 @@ import {
 import { Section, SectionHeader } from "home/Section";
 import { Reveal } from "home/Reveal";
 
+/**
+ * "The Flow" — your resume's journey through ResumeFlow, drawn as a
+ * serpentine stream. The path draws itself in on scroll and a current
+ * of small dashes travels along it endlessly. Desktop only; mobile
+ * falls back to a vertical stream timeline.
+ */
 const STEPS = [
   {
     icon: DocumentPlusIcon,
@@ -30,34 +36,132 @@ const STEPS = [
   },
 ];
 
+/* Node positions along the serpentine (percentages of the canvas) */
+const NODES = [
+  { x: 30, y: 14 },
+  { x: 70, y: 38 },
+  { x: 30, y: 62 },
+  { x: 70, y: 86 },
+];
+
+const PATH_D =
+  "M50,0 C50,7 30,7 30,14 C30,24 70,28 70,38 C70,48 30,52 30,62 C30,72 70,76 70,86 C70,93 50,93 50,100";
+
 export const Steps = () => (
-  <Section id="how-it-works" className="bg-card/50 border-y border-border">
+  <Section id="how-it-works">
     <SectionHeader
-      kicker="How it works"
-      title="From resume to application in four steps"
-      subtitle="No templates to fight, no formatting rabbit holes — a workflow built around how hiring actually happens."
+      kicker="The flow"
+      title="Follow your resume through the stream"
+      subtitle="One continuous flow: in as a rough draft, out as a complete, screener-proof application."
     />
-    <ol className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-      {STEPS.map(({ icon: Icon, title, text }, i) => (
-        <Reveal as="li" key={title} delay={i * 110} className="relative">
-          {/* connector line (desktop) */}
-          {i < STEPS.length - 1 && (
-            <span
-              aria-hidden="true"
-              className="absolute left-[calc(50%+2rem)] top-6 hidden h-px w-[calc(100%-4rem)] bg-gradient-to-r from-border to-transparent lg:block"
-            />
-          )}
-          <div className="flex flex-col items-start gap-4 lg:items-center lg:text-center">
-            <span className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-primary/20 bg-primary/[0.06] text-primary">
-              <Icon className="h-5 w-5" aria-hidden="true" />
-              <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">
-                {i + 1}
-              </span>
-            </span>
-            <div>
-              <h3 className="text-base font-bold text-foreground">{title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{text}</p>
+
+    {/* ---------- Desktop: serpentine journey ---------- */}
+    <Reveal className="relative hidden h-[760px] lg:block">
+      <svg
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        fill="none"
+      >
+        <defs>
+          <linearGradient id="flowGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="hsl(var(--primary))" />
+            <stop offset="1" stopColor="hsl(var(--accent))" />
+          </linearGradient>
+        </defs>
+        {/* Faint full route */}
+        <path
+          d={PATH_D}
+          pathLength={1}
+          stroke="hsl(var(--border))"
+          strokeWidth="1.5"
+          vectorEffect="non-scaling-stroke"
+        />
+        {/* Gradient route that draws itself in */}
+        <path
+          className="flow-path"
+          d={PATH_D}
+          pathLength={1}
+          stroke="url(#flowGrad)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+        />
+        {/* The current — dashes travelling downstream */}
+        <path
+          className="flow-dash"
+          d={PATH_D}
+          pathLength={1}
+          stroke="hsl(var(--accent))"
+          strokeWidth="3.5"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+          opacity="0.7"
+        />
+      </svg>
+
+      {/* Numbered nodes sitting on the stream */}
+      {NODES.map(({ x, y }, i) => (
+        <div
+          key={i}
+          aria-hidden="true"
+          className="node-pulse absolute z-10 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-primary bg-background text-sm font-bold text-primary"
+          style={{ left: `${x}%`, top: `${y}%` }}
+        >
+          {i + 1}
+        </div>
+      ))}
+
+      {/* Step cards on the opposite bank of each node */}
+      {STEPS.map(({ icon: Icon, title, text }, i) => {
+        const node = NODES[i];
+        const onLeftBank = node.x > 50; // card sits opposite the node
+        return (
+          <div
+            key={title}
+            className="absolute w-[38%] -translate-y-1/2"
+            style={{
+              top: `${node.y}%`,
+              ...(onLeftBank ? { left: "6%" } : { right: "6%" }),
+            }}
+          >
+            <div className="group rounded-2xl border border-border bg-card p-6 shadow-e1 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-e3">
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <h3 className="text-base font-bold text-foreground">{title}</h3>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p>
             </div>
+          </div>
+        );
+      })}
+    </Reveal>
+
+    {/* ---------- Mobile / tablet: vertical stream ---------- */}
+    <ol className="relative space-y-8 pl-10 lg:hidden">
+      <div
+        aria-hidden="true"
+        className="absolute bottom-2 left-[15px] top-2 w-px bg-gradient-to-b from-[hsl(var(--primary))] via-[hsl(var(--accent))] to-transparent"
+      />
+      {STEPS.map(({ icon: Icon, title, text }, i) => (
+        <Reveal as="li" key={title} delay={i * 90} className="relative">
+          <span
+            aria-hidden="true"
+            className="node-pulse absolute -left-10 top-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background text-xs font-bold text-primary"
+          >
+            {i + 1}
+          </span>
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-e1">
+            <div className="flex items-center gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Icon className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <h3 className="text-base font-bold text-foreground">{title}</h3>
+            </div>
+            <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{text}</p>
           </div>
         </Reveal>
       ))}
