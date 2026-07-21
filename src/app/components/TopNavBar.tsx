@@ -80,10 +80,16 @@ export const TopNavBar = () => {
               </Link>
             ))}
           <ThemeToggle />
+          <Link
+            href="/login"
+            className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            Sign in
+          </Link>
           {isHomePage && (
             <Link
               href="/resume-import"
-              className="ml-1.5 hidden items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-e1 transition-all hover:opacity-90 sm:inline-flex"
+              className="ml-1 inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-e1 transition-all hover:opacity-90"
             >
               Build resume
             </Link>

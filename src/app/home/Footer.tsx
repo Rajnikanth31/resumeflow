@@ -5,6 +5,7 @@ const LINK_GROUPS = [
   {
     heading: "Platform",
     links: [
+      ["/login", "Sign in"],
       ["#features", "Features"],
       ["#ats", "ATS Scorer"],
       ["#templates", "Templates"],
